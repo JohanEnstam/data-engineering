@@ -87,6 +87,12 @@ python src/utils/api_token_manager.py
 python src/data_collectors/trafiklab_gtfs_collector.py
 ```
 
+### Aktuell Status ✅
+- **Statisk data**: 1/50 requests använda (2% av månadsgräns)
+- **Realtidsdata**: 1/30000 requests använda (0.003% av månadsgräns)
+- **Senaste download**: 14 GTFS filer (2.2GB total)
+- **Realtidsdata**: SL ServiceAlerts (87KB)
+
 ### Kontrollera innan anrop
 ```python
 from utils.api_token_manager import token_manager
