@@ -127,13 +127,20 @@ curl "http://localhost:8000/weather?lat=59.3293&lon=18.0686"
 │   ├── docs/                    # Dokumentation
 │   ├── tests/                   # Tester
 │   └── README.md                # Johan's approach dokumentation
-├── de_agil_metodik/             # Kursmaterial (separat)
+├── de_agil_metodik/             # Kursmaterial (separat Git-repo, ignorerat)
 ├── README.md                    # Huvudprojekt README
 ├── requirements.txt             # Python dependencies
 ├── Dockerfile                   # Docker setup
 ├── docker-compose.yml           # Docker compose
 └── env.example                  # Exempel .env fil
-```
+
+## 📚 Kursmaterial
+
+### de_agil_metodik/
+Detta är ett separat Git-repository med kursmaterial som är klonat in i projektet som referens. Det är ignorerat i Git för att undvika konflikter med huvudprojektet.
+
+**Innehåll**: Kursmaterial från Data Engineering kursen
+**Status**: Ignorerat i Git, behålls som lokal referens
 
 ## Nästa steg
 

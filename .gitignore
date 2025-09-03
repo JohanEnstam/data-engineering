@@ -64,7 +64,9 @@ logs/
 .env.production
 
 # Course materials (cloned for reference, kept local only)
+# Ignoring separate Git repository to avoid conflicts
 de_agil_metodik/
+de_agil_metodik/*
 
 # Coverage reports
 htmlcov/
