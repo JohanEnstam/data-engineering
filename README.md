@@ -118,25 +118,21 @@ curl "http://localhost:8000/weather?lat=59.3293&lon=18.0686"
 ## Projektstruktur
 
 ```
-├── src/
-│   ├── data_collectors/
-│   │   ├── smhi_weather.py      # SMHI API integration
-│   │   └── trafiklab_api.py     # Trafiklab API integration
-│   ├── data_processing/
-│   │   └── weather_processor.py # Väderdata bearbetning
-│   ├── models/
-│   │   └── delay_predictor.py    # ML-modell för prediktion
-│   └── api/
-│       └── main.py              # FastAPI applikation
-├── data/
-│   ├── raw/                     # Rådata från APIs
-│   ├── processed/               # Bearbetad data
-│   └── models/                   # Tränade modeller
-├── tests/                       # Tester
-├── docker-compose.yml           # Docker Compose konfiguration
-├── Dockerfile                   # Docker image
+├── johans_approach/             # Johan's experimentella arbete
+│   ├── src/                     # Källkod (SMHI + Trafiklab)
+│   │   ├── data_collectors/     # API collectors
+│   │   ├── utils/               # Utilities (token management)
+│   │   └── api/                 # FastAPI endpoints
+│   ├── data/                    # Data (2.2GB GTFS + realtidsdata)
+│   ├── docs/                    # Dokumentation
+│   ├── tests/                   # Tester
+│   └── README.md                # Johan's approach dokumentation
+├── de_agil_metodik/             # Kursmaterial (separat)
+├── README.md                    # Huvudprojekt README
 ├── requirements.txt             # Python dependencies
-└── README.md                    # Denna fil
+├── Dockerfile                   # Docker setup
+├── docker-compose.yml           # Docker compose
+└── env.example                  # Exempel .env fil
 ```
 
 ## Nästa steg

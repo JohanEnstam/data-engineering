@@ -2,6 +2,9 @@
 data/raw/gtfs/
 data/raw/gtfs_rt/
 data/api_usage.json
+johans_approach/data/raw/gtfs/
+johans_approach/data/raw/gtfs_rt/
+johans_approach/data/api_usage.json
 
 # Environment variables
 .env
