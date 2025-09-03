@@ -1,7 +1,10 @@
-# Virtual environment
-venv/
-env/
-ENV/
+# Data files (too large for git)
+data/raw/gtfs/
+data/raw/gtfs_rt/
+data/api_usage.json
+
+# Environment variables
+.env
 
 # Python
 __pycache__/
@@ -26,6 +29,21 @@ wheels/
 *.egg
 MANIFEST
 
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
 # Data files
 data/raw/*.json
 data/processed/*.csv
@@ -39,26 +57,8 @@ logs/
 *.log
 
 # Environment variables
-.env
 .env.local
 .env.production
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Docker
-.dockerignore
-
-# Jupyter Notebook
-.ipynb_checkpoints
 
 # Course materials (cloned for reference, kept local only)
 de_agil_metodik/
@@ -76,3 +76,9 @@ coverage.xml
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Docker
+.dockerignore
+
+# Jupyter Notebook
+.ipynb_checkpoints
