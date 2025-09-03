@@ -15,4 +15,4 @@ Under sprint 1 har vi haft som uppgifter att:
 
 ##  **Mål** för sprint 1
 
-Huvudmålet är att börja på projektet och planera vad vi ska göra inför nästa sprint.
+* Huvudmålet är att börja på projektet och planera vad vi ska göra inför nästa sprint.
