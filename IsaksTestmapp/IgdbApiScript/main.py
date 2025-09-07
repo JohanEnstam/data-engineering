@@ -105,6 +105,9 @@ def main() -> int:
     auth = my_data.authenticate(client_id, client_secret)
     if auth:
         logger.info("Authentication successful")
+
+        # Fetch data from the IGDB API. 
+        # Change url, data_fields, and data_limit as needed.
         my_data.api_fetch("https://api.igdb.com/v4/games", 
                           client_id, auth["access_token"], 
                           ["name", "rating", "release_dates"], 5)
