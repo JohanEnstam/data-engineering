@@ -108,6 +108,16 @@ npm run dev
 - **"Python version conflict"** → Se troubleshooting-sektionen nedan
 - **"Connection refused"** → Kontrollera att backend körs på port 8000
 
+## 📸 **Så här ser systemet ut**
+
+När du har följt installationsstegen ovan kommer du att se:
+
+**Dashboard med kontrollpanel:**
+![Dashboard](docs/images/dashboard-screenshot.png)
+
+**Sökgränssnitt med rekommendationer:**
+![Search Interface](docs/images/search-interface-screenshot.png)
+
 ## 🎮 Användning
 
 ### 📊 **Data Collection Parametrar**
