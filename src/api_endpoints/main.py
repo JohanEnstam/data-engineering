@@ -8,9 +8,14 @@ from typing import List, Dict, Any
 import pandas as pd
 
 # Import our existing modules
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
+
 from data_processing.data_validator import IGDBDataValidator
 from models.game import Game, DataQualityReport, BudgetInfo
 from .budget import router as budget_router
+from .recommendations import router as recommendations_router
 
 app = FastAPI(
     title="IGDB Game Recommendation API",
@@ -21,14 +26,15 @@ app = FastAPI(
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],  # Next.js dev server
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3001"],  # Next.js dev server
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
-# Include budget router
+# Include routers
 app.include_router(budget_router)
+app.include_router(recommendations_router)
 
 # Data paths
 DATA_DIR = Path(__file__).parent.parent.parent / "data"
