@@ -58,7 +58,7 @@ class APIData:
                   data_limit: Optional[int] = None) -> None:
         """
         Fetches data from the IGDB API using the provided URL,
-        client ID, access token, and optional data fields and limit.  
+        client ID, access_token, and optional data fields and limit.  
         Stores the fetched data in the instance variable `data`.
 
         Args:
@@ -71,20 +71,30 @@ class APIData:
             data_limit (Optional[int]): Optional limit on the number of records to fetch.
         """
         try:
-            # Construct the data query
+            # Construct the data query with proper IGDB API syntax
             data_query = f"fields {','.join(data_fields)};" if data_fields \
                 else "fields id;"
             data_query += f" limit {data_limit};" if data_limit else " limit 10;"
             
+            # Add a basic filter to get more games
+            if "games" in url:
+                data_query += " where rating > 0;"
+            
+            logging.info(f"IGDB Query: {data_query}")
+            
             # Make the API request
             response = requests.post(
                 url=url, 
-                **{"headers": {"Client-ID": client_id, 
-                               "Authorization": f"Bearer {access_token}"}, 
-                               "data": data_query})
+                headers={"Client-ID": client_id, 
+                        "Authorization": f"Bearer {access_token}"}, 
+                data=data_query)
             
             self.api_url = url
             self.data = response.json()
+            
+            logging.info(f"IGDB Response status: {response.status_code}")
+            logging.info(f"IGDB Response data length: {len(self.data)}")
+            
         except Exception as e:
             logging.error(f"An error occurd when trying to fetch data: {e}")
 

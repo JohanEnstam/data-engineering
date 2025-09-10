@@ -86,13 +86,12 @@ class IGDBETLPipeline:
                     'rating_count': game.get('rating_count', 0),
                 }
                 
-                # Processa release dates
+                # Processa release dates (IGDB returnerar ID:n, inte objekt)
                 release_dates = game.get('release_dates', [])
                 if release_dates:
-                    # Ta första release date
-                    first_release = release_dates[0]
-                    processed_game['release_date'] = first_release.get('date')
-                    processed_game['release_year'] = first_release.get('date', '')[:4] if first_release.get('date') else None
+                    # IGDB returnerar release date ID:n, inte datum
+                    processed_game['release_date'] = release_dates[0] if isinstance(release_dates[0], int) else None
+                    processed_game['release_year'] = None  # Kommer att fyllas i senare
                 else:
                     processed_game['release_date'] = None
                     processed_game['release_year'] = None

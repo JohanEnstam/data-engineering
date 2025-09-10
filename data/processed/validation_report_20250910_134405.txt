@@ -1,0 +1,147 @@
+============================================================
+IGDB DATA QUALITY REPORT
+============================================================
+Total spel: 100
+Validation status: PASSED
+
+ISSUES:
+  - Kolumner med >50% missing data: {'storyline': 76, 'release_year': 100, 'cover_url': 100}
+
+STATISTICS:
+  RATING:
+    min: 40.00
+    max: 90.00
+    mean: 66.89
+    std: 11.85
+  RELEASE_YEAR:
+    min: nan
+    max: nan
+    mean: nan
+  GENRES:
+    unique_genres: 14
+    games_without_genres: 0
+  THEMES:
+    unique_themes: 13
+    games_without_themes: 0
+  PLATFORMS:
+    unique_platforms: 14
+    games_without_platforms: 0
+
+FEATURE STATISTICS:
+  GENRE_FEATURES:
+    total_features: 21
+    games_without_genres: 0
+  THEME_FEATURES:
+    total_features: 21
+    games_without_themes: 16
+  PLATFORM_FEATURES:
+    total_features: 45
+    games_without_platforms: 0
+
+DATA TYPES:
+  id: int64
+  name: object
+  summary: object
+  storyline: object
+  rating: float64
+  rating_count: int64
+  release_date: int64
+  release_year: float64
+  genres: object
+  genre_count: int64
+  themes: object
+  theme_count: int64
+  platforms: object
+  platform_count: int64
+  game_modes: object
+  player_perspectives: object
+  cover_id: float64
+  cover_url: float64
+  screenshot_ids: object
+  screenshot_count: int64
+  website_ids: object
+  genre_2: int64
+  genre_4: int64
+  genre_5: int64
+  genre_7: int64
+  genre_8: int64
+  genre_9: int64
+  genre_10: int64
+  genre_11: int64
+  genre_12: int64
+  genre_13: int64
+  genre_14: int64
+  genre_15: int64
+  genre_16: int64
+  genre_24: int64
+  genre_25: int64
+  genre_31: int64
+  genre_32: int64
+  genre_33: int64
+  genre_34: int64
+  genre_35: int64
+  theme_1: int64
+  theme_17: int64
+  theme_18: int64
+  theme_19: int64
+  theme_20: int64
+  theme_21: int64
+  theme_22: int64
+  theme_23: int64
+  theme_27: int64
+  theme_31: int64
+  theme_32: int64
+  theme_33: int64
+  theme_34: int64
+  theme_35: int64
+  theme_38: int64
+  theme_40: int64
+  theme_41: int64
+  theme_42: int64
+  theme_43: int64
+  theme_44: int64
+  platform_385: int64
+  platform_130: int64
+  platform_3: int64
+  platform_388: int64
+  platform_5: int64
+  platform_6: int64
+  platform_7: int64
+  platform_8: int64
+  platform_9: int64
+  platform_387: int64
+  platform_4: int64
+  platform_12: int64
+  platform_13: int64
+  platform_14: int64
+  platform_15: int64
+  platform_16: int64
+  platform_19: int64
+  platform_20: int64
+  platform_150: int64
+  platform_25: int64
+  platform_26: int64
+  platform_29: int64
+  platform_32: int64
+  platform_34: int64
+  platform_35: int64
+  platform_163: int64
+  platform_165: int64
+  platform_37: int64
+  platform_39: int64
+  platform_167: int64
+  platform_41: int64
+  platform_169: int64
+  platform_46: int64
+  platform_48: int64
+  platform_49: int64
+  platform_52: int64
+  platform_57: int64
+  platform_58: int64
+  platform_63: int64
+  platform_75: int64
+  platform_78: int64
+  platform_86: int64
+  platform_87: int64
+  platform_115: int64
+============================================================

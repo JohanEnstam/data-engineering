@@ -1,0 +1,67 @@
+# Cursor Rules för Data Engineering Projekt
+
+## 🚨 KRITISKA SÄKERHETSRUTINER
+
+### Python Virtual Environment
+- **ALDRIG** kör Python-kommandon utan att först aktivera venv
+- **ALWAYS** använd `source venv/bin/activate` före Python-kommandon
+- **ALWAYS** verifiera att venv är aktivt med `which python` eller `pip list`
+- **ALWAYS** inkludera venv-aktivering i terminal-kommandon
+
+### Exempel på KORREKT sätt:
+```bash
+# Aktivera venv FÖRST
+source venv/bin/activate && python collect_data.py --games-limit 1000
+
+# Eller verifiera att venv är aktivt
+source venv/bin/activate && which python && python collect_data.py
+```
+
+### Exempel på FEL sätt:
+```bash
+# FEL - kör Python utan venv
+python collect_data.py --games-limit 1000
+```
+
+## 🔧 PROJEKTSPECIFIKA REGLER
+
+### Data Collection
+- Använd alltid `--games-limit` parameter för att kontrollera datamängd
+- Verifiera att IGDB API credentials finns i `.env` fil
+- Använd `--skip-collection` eller `--skip-etl` för att testa delar av pipeline
+
+### Git Workflow
+- Använd beskrivande commit-meddelanden
+- Committa ofta med små, logiska ändringar
+- Använd feature branches för nya funktioner
+- Kör pre-commit hooks innan commit
+
+### ML Development
+- Testa alltid lokalt först innan cloud deployment
+- Använd visuell evaluation för ML-modeller
+- Dokumentera model performance och features
+
+### Budget Management
+- Övervaka GCP-kostnader kontinuerligt
+- Använd lokal utveckling för prototyping
+- Flytta till cloud endast när modellen fungerar bra lokalt
+
+## 📁 FILSTRUKTUR
+- Python kod i `src/` mappen
+- Data i `data/raw/` och `data/processed/`
+- Frontend i `frontend/` mappen
+- Konfiguration i root-mappen
+
+## 🚫 FÖRBJUDNA ÅTGÄRDER
+- Kör Python utan aktiverad venv
+- Committa stora filer eller secrets
+- Ignorera budget alerts
+- Deploya till cloud utan lokal testning
+- Kör ML-modeller utan visuell evaluation
+
+## ✅ BÄSTA PRAXIS
+- Aktivera venv innan varje Python-kommando
+- Testa lokalt innan cloud deployment
+- Använd beskrivande variabelnamn och kommentarer
+- Dokumentera alla ändringar
+- Följ Git Flow workflow
