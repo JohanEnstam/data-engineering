@@ -1,9 +1,9 @@
 import os
 import logging
 from dotenv import load_dotenv
-
 import requests
 import json
+from typing import Optional, List
 
 
 class APIData:
@@ -24,7 +24,7 @@ class APIData:
         return f"APIData(data={self.data})"
     def __str__(self):
         return json.dumps(self.data, indent=4)
-    def authenticate(self, client_id: str, client_secret: str) -> dict | None:
+    def authenticate(self, client_id: str, client_secret: str) -> Optional[dict]:
         """
         Tries to authenticate with the IGDB API using the provided client ID 
         and client secret.
@@ -54,8 +54,8 @@ class APIData:
             logging.error(f"An error occurd when trying to authenticate: {e}")
             return None
     def api_fetch(self, url: str, client_id: str, access_token: str, 
-                  data_fields: list[str] | None = None, 
-                  data_limit: int | None = None) -> None:
+                  data_fields: Optional[List[str]] = None, 
+                  data_limit: Optional[int] = None) -> None:
         """
         Fetches data from the IGDB API using the provided URL,
         client ID, access token, and optional data fields and limit.  
@@ -66,9 +66,9 @@ class APIData:
                 "https://api.igdb.com/v4/{endpoint}")
             client_id (str): The client ID from Twitch Developer for the IGDB API.
             access_token (str): The access token obtained from authentication.
-            data_fields (list[str] | None): Optional list of fields to fetch from the
+            data_fields (Optional[List[str]]): Optional list of fields to fetch from the
                 API.
-            data_limit (int | None): Optional limit on the number of records to fetch.
+            data_limit (Optional[int]): Optional limit on the number of records to fetch.
         """
         try:
             # Construct the data query

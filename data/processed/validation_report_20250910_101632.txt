@@ -1,0 +1,68 @@
+============================================================
+IGDB DATA QUALITY REPORT
+============================================================
+Total spel: 1
+Validation status: PASSED
+
+ISSUES:
+  - Kolumner med >50% missing data: {'storyline': 1, 'rating': 1, 'release_date': 1, 'release_year': 1, 'cover_url': 1}
+
+STATISTICS:
+  RATING:
+    min: nan
+    max: nan
+    mean: nan
+    std: nan
+  RELEASE_YEAR:
+    min: nan
+    max: nan
+    mean: nan
+  GENRES:
+    unique_genres: 9
+    games_without_genres: 0
+  THEMES:
+    unique_themes: 7
+    games_without_themes: 0
+  PLATFORMS:
+    unique_platforms: 2
+    games_without_platforms: 0
+
+FEATURE STATISTICS:
+  GENRE_FEATURES:
+    total_features: 4
+    games_without_genres: 0
+  THEME_FEATURES:
+    total_features: 3
+    games_without_themes: 0
+  PLATFORM_FEATURES:
+    total_features: 1
+    games_without_platforms: 1
+
+DATA TYPES:
+  id: int64
+  name: object
+  summary: object
+  storyline: float64
+  rating: float64
+  rating_count: int64
+  release_date: float64
+  release_year: float64
+  genres: object
+  genre_count: int64
+  themes: object
+  theme_count: int64
+  platforms: object
+  platform_count: int64
+  game_modes: object
+  player_perspectives: object
+  cover_id: int64
+  cover_url: float64
+  screenshot_ids: object
+  screenshot_count: int64
+  website_ids: object
+  genre_24: int64
+  genre_13: int64
+  genre_5: int64
+  theme_1: int64
+  theme_39: int64
+============================================================

@@ -2,67 +2,96 @@
 
 ## 🎯 **Omedelbara Åtgärder (Idag)**
 
-### **Steg 1: Git Branch Setup**
-- [ ] Byt till main branch
-- [ ] Skapa develop branch från main
-- [ ] Skapa feature/igdb-project-setup branch
-- [ ] Committa nuvarande .gitignore ändringar
+### **Steg 1: Frontend Setup** ⭐ **PRIORITET**
+- [ ] **Next.js 14 setup** med TypeScript och Tailwind CSS
+- [ ] **shadcn/ui installation** och konfiguration
+- [ ] **Data visualization components** - tables, charts, cards
+- [ ] **Budget tracking dashboard** för GCP credits
+- [ ] **Responsive layout** för desktop och mobil
 
-### **Steg 2: Projektstruktur**
-- [ ] Skapa mappstruktur enligt best practice
-- [ ] Migrera Isaks IGDB kod till `src/api/igdb_client.py`
-- [ ] Behåll frontend/ på samma plats
-- [ ] Skapa data/ mappar (raw, processed, models)
-- [ ] Skapa tests/ mapp
+### **Steg 2: Data Visualization** ⭐ **PRIORITET**
+- [ ] **Games table** - visa testdata från IGDB API
+- [ ] **Data quality metrics** - validation reports
+- [ ] **Collection statistics** - antal spel, genrer, etc.
+- [ ] **Interactive filtering** - sök och filtrera spel
+- [ ] **Real-time updates** när ny data hämtas
 
-### **Steg 3: Grundläggande Setup**
-- [ ] Skapa requirements.txt för Python dependencies
-- [ ] Uppdatera package.json för frontend
-- [ ] Skapa Dockerfile för containerization
-- [ ] Skapa docker-compose.yml för local development
-- [ ] Skapa README.md med setup instruktioner
+### **Steg 3: API Integration**
+- [ ] **FastAPI endpoints** för data access
+- [ ] **Real-time data fetching** från IGDB API
+- [ ] **Error handling** och loading states
+- [ ] **Data caching** för performance
+- [ ] **API documentation** med Swagger
 
 ## 🚀 **Kommande Veckor**
 
-### **Vecka 1: Lokal Prototyping**
-- [ ] Utveckla data collection script
-- [ ] Bygg data preprocessing pipeline
-- [ ] Skapa enkel ML model (content-based filtering)
-- [ ] Testa rekommendationsalgoritm
-- [ ] Bygg basic web interface
+### **Vecka 1: Frontend-First Prototyping** ⭐ **AKTUELL**
+- [x] **Data collection script** (✅ Klar)
+- [x] **Data preprocessing pipeline** (✅ Klar)
+- [ ] **Frontend setup** med Next.js + shadcn/ui
+- [ ] **Data visualization** - visa testdata i tables/charts
+- [ ] **Budget tracking** dashboard för GCP credits
+- [ ] **Basic API endpoints** för data access
+- [ ] **Enkel ML model** (content-based filtering)
+- [ ] **Frontend integration** - sök + rekommendationer
 
-### **Vecka 2: ML Enhancement**
-- [ ] Implementera collaborative filtering
-- [ ] Hybrid rekommendationsalgoritm
-- [ ] A/B testing av olika modeller
-- [ ] Performance optimization
+### **Vecka 2: Core ML Development**
+- [ ] **Progressive feature engineering** - core features (genres, themes)
+- [ ] **Local model training** på MacBook (1000+ spel)
+- [ ] **Manual evaluation system** - visuell feedback
+- [ ] **Model comparison** - testa olika algoritmer
+- [ ] **Performance optimization** för lokala constraints
+- [ ] **User feedback** system för model improvement
 
 ### **Vecka 3: Cloud Integration**
-- [ ] Skapa GCP projekt
-- [ ] Deploy API till Cloud Run
-- [ ] Skapa Airflow DAG
-- [ ] Automatisera data pipeline
+- [ ] **GCP budget tracking** - real-time cost monitoring
+- [ ] **Larger data collection** (10,000+ spel)
+- [ ] **Cloud model training** med Vertex AI
+- [ ] **Cost optimization** baserat på budget
+- [ ] **Deploy API** till Cloud Run
+- [ ] **Automated data pipeline** med Airflow
 
-### **Vecka 4: Production**
-- [ ] Deploy web app till Cloud Run
-- [ ] Sätt upp monitoring
-- [ ] CI/CD pipeline
-- [ ] Final testing och optimization
+### **Vecka 4: Advanced ML & Production**
+- [ ] **Advanced features** - text analysis, visual similarity
+- [ ] **A/B testing** framework med frontend
+- [ ] **Real-time rekommendationer** med caching
+- [ ] **CI/CD pipeline** med automated testing
+- [ ] **Documentation** och presentation för kursen
 
 ---
 
 ## 📋 **Checklist för Idag**
 
 **Före vi börjar:**
-- [ ] Läs igenom PROJECT_OVERVIEW.md
-- [ ] Bekräfta att alla delar av planen är tydliga
-- [ ] Fråga om oklarheter
+- [x] Läs igenom PROJECT_OVERVIEW.md
+- [x] Bekräfta att alla delar av planen är tydliga
+- [x] Diskutera frontend-first approach
+- [x] Uppdatera projektplanering
 
 **När vi börjar:**
-- [ ] Byt till main branch
-- [ ] Skapa develop branch
-- [ ] Skapa feature/igdb-project-setup branch
-- [ ] Börja migrera Isaks kod
+- [ ] **Frontend setup** - Next.js 14 + shadcn/ui
+- [ ] **Data visualization** - visa testdata i tables
+- [ ] **Budget tracking** - GCP credits monitoring
+- [ ] **API endpoints** - FastAPI för data access
+- [ ] **ML integration** - enkel rekommendationsmotor
+
+---
+
+## 💰 **Budget Management**
+
+### **GCP Credits: $300 tillgängliga**
+- **BigQuery:** ~$5-20/månad
+- **Cloud Run:** ~$10-30/månad  
+- **Vertex AI:** ~$50-200/månad
+- **Cloud Storage:** ~$1-5/månad
+- **Total estimat:** ~$66-255/månad
+
+### **Budget Tracking Features:**
+- [ ] **Real-time cost monitoring** från GCP API
+- [ ] **Cost prediction** baserat på usage patterns
+- [ ] **Budget alerts** när du närmar dig gränser
+- [ ] **Resource optimization** suggestions
+- [ ] **Frontend dashboard** för budget visualization
 
 ---
 

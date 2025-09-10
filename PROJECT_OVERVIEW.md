@@ -167,64 +167,81 @@ igdb-game-recommender/
 
 ## 🚀 **Utvecklingsfaser**
 
-### **Fas 1: Lokal Prototyping (Vecka 1-2)**
-**Mål:** Fungerande lokalt system
+### **Fas 1: Frontend-First Prototyping (Vecka 1)**
+**Mål:** Visuell feedback och iterativ utveckling
 
 **Uppgifter:**
-- [ ] Skapa projektstruktur enligt best practice
-- [ ] Migrera Isaks IGDB API kod till `src/api/`
-- [ ] Utveckla data collection script
-- [ ] Bygg data preprocessing pipeline
+- [x] Skapa projektstruktur enligt best practice
+- [x] Migrera Isaks IGDB API kod till `src/api/`
+- [x] Utveckla data collection script
+- [x] Bygg data preprocessing pipeline
+- [ ] **Frontend setup** med Next.js + shadcn/ui
+- [ ] **Data visualization** - visa testdata i tables/charts
+- [ ] **Budget tracking** dashboard för GCP credits
+- [ ] **Basic API endpoints** för data access
 - [ ] Skapa enkel ML model (content-based filtering)
-- [ ] Testa rekommendationsalgoritm
-- [ ] Bygg enkel web interface (Next.js)
-- [ ] Skapa FastAPI endpoints
-- [ ] Unit tests för kritiska funktioner
+- [ ] **Frontend integration** - sök + rekommendationer
 
 **Deliverables:**
 - Fungerande lokalt rekommendationssystem
-- Basic web interface
+- **Interaktiv web interface** för data exploration
+- **Budget monitoring** system
 - API endpoints för spel-sökning
-- Dokumenterad kod
+- **Visual feedback** för ML model evaluation
 
-### **Fas 2: Cloud Integration (Vecka 3-4)**
-**Mål:** Produktionsklart system i molnet
-
-**Uppgifter:**
-- [ ] Skapa GCP projekt och BigQuery dataset
-- [ ] Deploy API till Cloud Run
-- [ ] Skapa Airflow DAG för data pipeline
-- [ ] Automatisera data collection och processing
-- [ ] Deploy web app till Cloud Run
-- [ ] Sätt upp monitoring och logging
-- [ ] CI/CD pipeline med GitHub Actions
-- [ ] Performance optimization
-- [ ] Security hardening
-
-**Deliverables:**
-- Automatiserad data pipeline
-- Produktionsklart system i molnet
-- CI/CD pipeline
-- Monitoring och alerts
-
-### **Fas 3: ML Enhancement (Vecka 5-6)**
-**Mål:** Avancerade ML-funktioner
+### **Fas 2: Core ML Development (Vecka 2)**
+**Mål:** Robust rekommendationsmotor med visuell feedback
 
 **Uppgifter:**
-- [ ] Implementera collaborative filtering
-- [ ] Hybrid rekommendationsalgoritm
-- [ ] A/B testing av olika modeller
-- [ ] Visual similarity (cover analysis)
-- [ ] Text analysis (summary sentiment)
-- [ ] Model performance monitoring
-- [ ] Real-time rekommendationer
-- [ ] Caching för performance
+- [ ] **Progressive feature engineering** - börja med core features (genres, themes)
+- [ ] **Local model training** på MacBook (1000+ spel)
+- [ ] **Manual evaluation system** - "Ser dessa rekommendationer rimliga ut?"
+- [ ] **Frontend integration** - sök + rekommendationer i UI
+- [ ] **Model comparison** - testa olika algoritmer visuellt
+- [ ] **Performance optimization** för lokala constraints
+- [ ] **Data quality validation** med visuell feedback
 
 **Deliverables:**
-- Avancerade ML-algoritmer
-- A/B testing framework
-- Performance monitoring
-- Optimized rekommendationer
+- **Fungerande rekommendationsmotor** med visuell interface
+- **Model evaluation** framework
+- **Optimized local training** pipeline
+- **User feedback** system för model improvement
+
+### **Fas 3: Cloud Integration (Vecka 3)**
+**Mål:** Skalning till molnet med budget monitoring
+
+**Uppgifter:**
+- [ ] **GCP budget tracking** - real-time cost monitoring
+- [ ] **Larger data collection** (10,000+ spel)
+- [ ] **Cloud model training** med Vertex AI
+- [ ] **Cost optimization** baserat på budget constraints
+- [ ] **Deploy API** till Cloud Run
+- [ ] **Automated data pipeline** med Airflow
+- [ ] **Performance monitoring** med budget alerts
+
+**Deliverables:**
+- **Skalbar data pipeline** i molnet
+- **Budget-aware** system med cost monitoring
+- **Production-ready** API och frontend
+- **Automated** data collection och model training
+
+### **Fas 4: Advanced ML & Production (Vecka 4)**
+**Mål:** Production-ready system med avancerade funktioner
+
+**Uppgifter:**
+- [ ] **Advanced features** - text analysis, visual similarity
+- [ ] **A/B testing** framework med frontend integration
+- [ ] **User feedback** system för continuous improvement
+- [ ] **Real-time rekommendationer** med caching
+- [ ] **Performance monitoring** med budget tracking
+- [ ] **CI/CD pipeline** med automated testing
+- [ ] **Documentation** och presentation för kursen
+
+**Deliverables:**
+- **Production-ready** rekommendationssystem
+- **Advanced ML** funktioner med visuell feedback
+- **Complete documentation** för kursen
+- **Budget-optimized** cloud deployment
 
 ---
 
@@ -244,8 +261,10 @@ igdb-game-recommender/
 
 ### **Business Metrics**
 - **Data Pipeline Efficiency:** < 1 timme för fullständig datauppdatering
-- **Cost Optimization:** < $50/månad i GCP-kostnader
+- **Cost Optimization:** < $100/månad i GCP-kostnader (med budget tracking)
 - **Scalability:** Stöder 1000+ samtidiga användare
+- **Budget Utilization:** < 80% av tillgängliga GCP credits
+- **Development Velocity:** Visuell feedback inom 1 dag för varje feature
 
 ---
 
@@ -258,10 +277,14 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-# Node.js environment
+# Node.js environment (Frontend-First Development)
 cd frontend
 npm install
 npm run dev
+
+# Data collection och ML
+python collect_data.py --games-limit 1000
+python -m src.models.train_recommender
 
 # Docker (optional)
 docker-compose up
@@ -272,7 +295,9 @@ docker-compose up
 - **BigQuery Dataset:** game_data
 - **Cloud Storage:** igdb-raw-data
 - **Cloud Run:** API och Frontend
+- **Vertex AI:** ML model training
 - **Airflow:** Data pipeline orchestration
+- **Budget Monitoring:** Real-time cost tracking
 
 ---
 
@@ -296,27 +321,28 @@ docker-compose up
 ## 🎯 **Nästa Steg**
 
 ### **Omedelbara åtgärder:**
-1. **Skapa develop branch** från main
-2. **Skapa feature/igdb-project-setup** branch
-3. **Migrera Isaks kod** till ny struktur
-4. **Sätt upp projektstruktur** enligt best practice
-5. **Börja utveckla** första komponenter
+1. **Frontend setup** med Next.js + shadcn/ui
+2. **Data visualization** - visa testdata i tables/charts
+3. **Budget tracking** dashboard för GCP credits
+4. **Basic API endpoints** för data access
+5. **Core ML development** med visuell feedback
 
 ### **Kommande veckor:**
-- **Vecka 1:** Lokal prototyping och grundläggande funktionalitet
-- **Vecka 2:** ML-algoritmer och rekommendationssystem
-- **Vecka 3:** Cloud integration och data pipeline
-- **Vecka 4:** Production deployment och optimization
+- **Vecka 1:** Frontend-first prototyping med data visualization
+- **Vecka 2:** Core ML development med visuell feedback
+- **Vecka 3:** Cloud integration med budget monitoring
+- **Vecka 4:** Advanced ML och production deployment
 
 ---
 
 ## 📝 **Projektstatus**
 
 **Senast uppdaterad:** 2024-09-10
-**Nuvarande fas:** Projektplanering och setup
-**Nästa milestone:** Lokal prototyping (Vecka 1)
+**Nuvarande fas:** Data collection och ETL pipeline (✅ Klar)
+**Nästa milestone:** Frontend setup och data visualization (Vecka 1)
 **Gruppmedlemmar:** Viktoria, Isak & Johan
-**Teknisk stack:** Python, Next.js, GCP, IGDB API
+**Teknisk stack:** Python, Next.js, shadcn/ui, GCP, IGDB API
+**Budget:** $300 GCP credits tillgängliga
 
 ---
 

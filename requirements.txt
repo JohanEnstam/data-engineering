@@ -12,6 +12,9 @@ pandas==2.1.4
 numpy==1.25.2
 scikit-learn==1.3.2
 
+# Data collection and ETL
+pathlib2==2.3.7
+
 # Database
 sqlalchemy==2.0.23
 psycopg2-binary==2.9.9
