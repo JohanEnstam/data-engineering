@@ -1,182 +1,151 @@
-# IGDB Spelrekommendationssystem
+# 🎮 IGDB Spelrekommendationssystem
 
-Ett komplett spelrekommendationssystem byggt med IGDB API, Machine Learning och Google Cloud Platform.
+Ett komplett spelrekommendationssystem med Google-liknande sökinterface, ML-baserade rekommendationer och real-time dashboard.
 
-## 🎯 Projektöversikt
+## 🎯 Vad systemet gör
 
-Detta projekt bygger ett spelrekommendationssystem där användare kan söka efter spel och få rekommendationer på liknande spel baserat på ML-algoritmer. Systemet använder IGDB API som datakälla och är implementerat som en fullständig data pipeline i Google Cloud Platform.
+- **Sök spel** med autocomplete (som Google)
+- **Få rekommendationer** på liknande spel baserat på ML
+- **Dashboard** med statistik och data quality
+- **Real-time data** från IGDB API
 
-## 🏗️ Teknisk Stack
+## 🚀 Snabbstart för gruppmedlemmar
 
-- **Backend:** Python, FastAPI, IGDB API
-- **Frontend:** Next.js 14, TypeScript, Tailwind CSS, shadcn/ui
-- **Data Processing:** BigQuery, Cloud Dataflow/dbt
-- **ML:** scikit-learn, pandas, numpy
-- **Orchestration:** Apache Airflow
-- **Cloud:** Google Cloud Platform (GCP)
-- **CI/CD:** GitHub Actions
-- **Containerization:** Docker
-
-## 🚀 Snabbstart
-
-### Förutsättningar
-
-- Python 3.11+
-- Node.js 18+
-- Docker (valfritt)
-- Twitch Developer konto för IGDB API
-
-### Lokal utveckling
-
-1. **Klona repositoryt**
+### 1. Klona och navigera
 ```bash
-git clone <repository-url>
+git clone https://github.com/JohanEnstam/data-engineering.git
 cd data-engineering
 ```
 
-2. **Sätt upp Python environment**
+### 2. Sätt upp Python environment
 ```bash
+# Skapa virtual environment
 python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# eller
-venv\Scripts\activate  # Windows
+
+# Aktivera (välj rätt kommando för ditt OS)
+source venv/bin/activate  # Mac/Linux
+# ELLER
+venv\Scripts\activate     # Windows
+
+# Installera dependencies
 pip install -r requirements.txt
 ```
 
-3. **Konfigurera environment variabler**
+### 3. Konfigurera IGDB API
 ```bash
+# Kopiera template
 cp .env.template .env
+
 # Redigera .env med dina Twitch credentials
+nano .env  # eller använd valfri texteditor
 ```
 
-4. **Sätt upp frontend**
+**Du behöver:**
+- Gå till [Twitch Developer Portal](https://dev.twitch.tv)
+- Skapa en ny applikation
+- Kopiera Client ID och Client Secret
+- Klistra in i `.env` filen
+
+### 4. Samla data (5-10 minuter)
 ```bash
+# Viktigt: Aktivera venv först!
+source venv/bin/activate && python collect_data.py --games-limit 1000
+```
+
+### 5. Starta backend
+```bash
+# Terminal 1 - Backend
+source venv/bin/activate && python -m uvicorn src.api_endpoints.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+### 6. Starta frontend
+```bash
+# Terminal 2 - Frontend
 cd frontend
 npm install
 npm run dev
 ```
 
-5. **Starta backend**
-```bash
-python -m uvicorn src.api_endpoints.main:app --reload
-```
+### 7. Öppna systemet
+- **Frontend:** http://localhost:3000
+- **Backend API:** http://localhost:8000
+- **API Docs:** http://localhost:8000/docs
 
-### Docker utveckling
+## 🎮 Användning
 
-```bash
-# Starta alla tjänster
-docker-compose up --build
+### Sök och rekommendationer
+1. Gå till http://localhost:3000/recommendations
+2. Skriv i sökfältet (t.ex. "space")
+3. Klicka på ett spel för att få rekommendationer
 
-# Endast backend
-docker-compose up api
+### Dashboard
+1. Gå till http://localhost:3000
+2. Se statistik, data quality och budget info
 
-# Endast frontend
-docker-compose up frontend
-```
+## 🏗️ Teknisk Stack
+
+- **Backend:** Python, FastAPI, IGDB API
+- **Frontend:** Next.js 14, TypeScript, Tailwind CSS
+- **ML:** scikit-learn, pandas, numpy
+- **Data:** IGDB API (1000+ spel)
 
 ## 📁 Projektstruktur
 
 ```
-igdb-game-recommender/
-├── src/                       # Huvudkod
+data-engineering/
+├── src/                       # Python backend
 │   ├── api/                   # IGDB API client
-│   ├── data_collectors/       # Data collection scripts
-│   ├── data_processing/       # ETL och transformation
-│   ├── models/                # ML modeller och algoritmer
-│   ├── api_endpoints/         # FastAPI endpoints
-│   └── utils/                 # Hjälpfunktioner
+│   ├── data_collectors/       # Data collection
+│   ├── data_processing/       # ETL pipeline
+│   ├── models/                # ML modeller
+│   └── api_endpoints/         # FastAPI endpoints
 ├── frontend/                  # Next.js app
-├── data/                      # Data storage
-├── tests/                     # Unit och integration tests
-├── docs/                      # Dokumentation
-├── config/                    # Konfigurationsfiler
-├── scripts/                   # Deployment scripts
+│   ├── src/app/               # Pages
+│   └── src/components/        # React components
+├── data/                      # Data storage (lokal)
+│   ├── raw/                   # Rådata från IGDB
+│   ├── processed/             # Bearbetad data
+│   └── models/                # Tränade ML-modeller
 └── requirements.txt           # Python dependencies
 ```
 
-## 🔧 Konfiguration
+## 🔧 Troubleshooting
 
-### IGDB API Setup
-
-1. Gå till [Twitch Developer Portal](https://dev.twitch.tv)
-2. Skapa en ny applikation
-3. Kopiera Client ID och Client Secret
-4. Uppdatera `.env` filen
-
-### Environment Variabler
-
+### "ModuleNotFoundError: No module named 'pandas'"
 ```bash
-# IGDB API
-CLIENT_ID=your_client_id_here
-CLIENT_SECRET=your_client_secret_here
-
-# Database (valfritt)
-DATABASE_URL=postgresql://user:password@localhost:5432/igdb_recommender
-
-# API Configuration
-API_HOST=0.0.0.0
-API_PORT=8000
+# Kontrollera att venv är aktiverat
+which python  # Ska visa path till venv/bin/python
+source venv/bin/activate && pip install -r requirements.txt
 ```
 
-## 🧪 Testing
-
+### "Connection refused" i frontend
 ```bash
-# Kör alla tester
-pytest
-
-# Kör specifika tester
-pytest tests/test_api.py
-pytest tests/test_models.py
-
-# Med coverage
-pytest --cov=src tests/
+# Kontrollera att backend körs
+curl http://localhost:8000/api/health
 ```
 
-## 📊 API Dokumentation
-
-När servern körs, besök:
-- **Swagger UI:** http://localhost:8000/docs
-- **ReDoc:** http://localhost:8000/redoc
-
-## 🚀 Deployment
-
-### Google Cloud Platform
-
+### "No games found" i sökning
 ```bash
-# Deploy till Cloud Run
-gcloud run deploy igdb-api --source .
-
-# Deploy frontend
-cd frontend
-gcloud run deploy igdb-frontend --source .
+# Kontrollera att data finns
+ls -la data/processed/games_*.csv
+# Om tomt, kör data collection igen
+source venv/bin/activate && python collect_data.py --games-limit 1000
 ```
-
-### Docker
-
-```bash
-# Bygg image
-docker build -t igdb-recommender .
-
-# Kör container
-docker run -p 8000:8000 igdb-recommender
-```
-
-## 🤝 Bidrag
-
-1. Forka projektet
-2. Skapa en feature branch (`git checkout -b feature/amazing-feature`)
-3. Committa dina ändringar (`git commit -m 'Add amazing feature'`)
-4. Pusha till branchen (`git push origin feature/amazing-feature`)
-5. Öppna en Pull Request
-
 
 ## 📚 Dokumentation
 
-- [Projektöversikt](PROJECT_OVERVIEW.md)
-- [Nästa steg](NEXT_STEPS.md)
-- [API Dokumentation](docs/api.md)
-- [Deployment Guide](docs/deployment.md)
+- [Projektöversikt](PROJECT_OVERVIEW.md) - Detaljerad projektbeskrivning
+- [Nästa steg](NEXT_STEPS.md) - Utvecklingsplan
+- [Setup Guide](SETUP.md) - Detaljerad installationsguide
+
+## 🤝 Bidrag
+
+1. Skapa feature branch: `git checkout -b feature/ditt-namn`
+2. Gör ändringar
+3. Committa: `git commit -m "Beskrivning"`
+4. Pusha: `git push origin feature/ditt-namn`
+5. Skapa Pull Request
 
 ---
 
-*För mer information, se [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)*
+**🎉 Klar! Du ska nu ha ett fungerande spelrekommendationssystem med 1000+ spel och ML-rekommendationer!**

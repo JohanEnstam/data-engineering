@@ -53,20 +53,20 @@
 - [x] **Budget tracking** dashboard för GCP credits
 - [x] **Basic API endpoints** för data access
 - [x] **GCP Integration** - budget monitoring med verklig data
-- [ ] **Enkel ML model** (content-based filtering)
-- [ ] **Frontend integration** - sök + rekommendationer
+- [x] **Enkel ML model** (content-based filtering)
+- [x] **Frontend integration** - sök + rekommendationer
 
-### **Vecka 2: Local-First ML Development** ⭐ **NÄSTA PRIORITET**
+### **Vecka 2: Local-First ML Development** ⭐ **KLAR** ✅
 **Strategi:** "Progressive Local-First" - utveckla och testa allt lokalt först
 
-- [ ] **Data Collection (1,000-2,000 spel)** - samla tillräckligt med data lokalt
-- [ ] **Progressive feature engineering** - core features (genres, themes)
-- [ ] **Local model training** på MacBook med scikit-learn
-- [ ] **Manual evaluation system** - "Ser dessa rekommendationer rimliga ut?"
-- [ ] **Frontend integration** - sök + rekommendationer i UI
-- [ ] **Model comparison** - testa olika algoritmer visuellt
-- [ ] **Performance optimization** för lokala constraints
-- [ ] **User feedback** system för model improvement
+- [x] **Data Collection (1,000+ spel)** - samla tillräckligt med data lokalt
+- [x] **Progressive feature engineering** - core features (genres, themes)
+- [x] **Local model training** på MacBook med scikit-learn
+- [x] **Manual evaluation system** - "Ser dessa rekommendationer rimliga ut?"
+- [x] **Frontend integration** - sök + rekommendationer i UI
+- [x] **Model comparison** - testa olika algoritmer visuellt
+- [x] **Performance optimization** för lokala constraints
+- [x] **User feedback** system för model improvement
 
 **Varför lokalt först:**
 - ✅ **Snabb iteration** - testa idéer på minuter, inte timmar
@@ -136,30 +136,28 @@
 
 ---
 
-## 🎯 **Konkreta Nästa Steg - Idag**
+## 🎯 **Nästa Steg - Cloud Integration**
 
-### **Steg 1: Data Collection (1-2 timmar)**
+### **Steg 1: Cloud Data Collection (1-2 dagar)**
 ```bash
-# Uppdatera collect_data.py för 1,000 spel
-python collect_data.py --games-limit 1000 --output-dir data/raw
+# Skala upp till 10,000+ spel
+python collect_data.py --games-limit 10000 --output-dir data/raw
 ```
 
-### **Steg 2: ML Model Development (2-3 dagar)**
-```python
-# Bygg enkel content-based filtering
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-```
+### **Steg 2: Cloud Model Training (2-3 dagar)**
+- Deploy till Vertex AI för större modeller
+- Använda GCP credits för träning
+- A/B testa olika algoritmer
 
-### **Steg 3: Frontend Integration (1-2 dagar)**
-- Lägg till sökfunktion i Next.js app
-- Visa rekommendationer med cover-bilder
-- Testa olika spel och se om rekommendationerna känns rimliga
+### **Steg 3: Production Deployment (1-2 dagar)**
+- Deploy API till Cloud Run
+- Deploy frontend till Cloud Run
+- Sätt upp CI/CD pipeline
 
-### **Steg 4: Visual Evaluation**
-- "Ser dessa rekommendationer rimliga ut?"
-- Testa med olika spel du känner till
-- Iterera på algoritmer baserat på feedback
+### **Steg 4: Advanced Features**
+- Real-time rekommendationer med caching
+- User feedback system
+- Performance monitoring
 
 ---
 
