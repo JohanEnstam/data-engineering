@@ -49,7 +49,7 @@ nano .env  # eller använd valfri texteditor
 ### 4. Samla data (5-10 minuter)
 ```bash
 # Viktigt: Aktivera venv först!
-source venv/bin/activate && python collect_data.py --games-limit 1000
+source venv/bin/activate && python collect_data.py --games-limit 100
 ```
 
 ### 5. Starta backend
@@ -75,12 +75,19 @@ npm run dev
 
 ### Sök och rekommendationer
 1. Gå till http://localhost:3000/recommendations
-2. Skriv i sökfältet (t.ex. "space")
-3. Klicka på ett spel för att få rekommendationer
+2. Skriv i sökfältet (t.ex. "space", "tetris", "adventure")
+3. Klicka på ett spel för att få top 3 rekommendationer
+4. Se cover-bilder och spelinformation
 
-### Dashboard
+### Dashboard med riktig data
 1. Gå till http://localhost:3000
-2. Se statistik, data quality och budget info
+2. **Overview tab:** Se 100 spel i tabellformat
+3. **Statistics tab:** Se data quality metrics:
+   - Rating range: 40.0 - 90.0 (genomsnitt: 66.9)
+   - 20 unika genres, 20 unika themes, 44 unika platforms
+   - 21 genre features, 21 theme features, 45 platform features
+4. **Data Quality tab:** Se validering och issues
+5. **Budget tab:** Se GCP budget monitoring
 
 ## 🏗️ Teknisk Stack
 

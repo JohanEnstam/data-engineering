@@ -78,6 +78,7 @@
 **När du ska flytta till molnet:**
 - ✅ Du har en **fungerande modell** lokalt
 - ✅ Du vet vilka **features som fungerar**
+- ✅ Du har **100 spel** med fungerande ML-rekommendationer
 - ✅ Du vill ha **10,000+ spel** (för bättre rekommendationer)
 - ✅ Du vill **automatisera** data collection
 

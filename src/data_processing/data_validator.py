@@ -67,10 +67,10 @@ class IGDBDataValidator:
         if 'rating' in df.columns:
             rating_stats = df['rating'].describe()
             validation_results["statistics"]["rating"] = {
-                "min": rating_stats['min'],
-                "max": rating_stats['max'],
-                "mean": rating_stats['mean'],
-                "std": rating_stats['std']
+                "min": float(rating_stats['min']) if pd.notna(rating_stats['min']) else None,
+                "max": float(rating_stats['max']) if pd.notna(rating_stats['max']) else None,
+                "mean": float(rating_stats['mean']) if pd.notna(rating_stats['mean']) else None,
+                "std": float(rating_stats['std']) if pd.notna(rating_stats['std']) else None
             }
             
             # IGDB ratings är vanligtvis 0-100
@@ -82,9 +82,9 @@ class IGDBDataValidator:
         if 'release_year' in df.columns:
             year_stats = df['release_year'].describe()
             validation_results["statistics"]["release_year"] = {
-                "min": year_stats['min'],
-                "max": year_stats['max'],
-                "mean": year_stats['mean']
+                "min": float(year_stats['min']) if pd.notna(year_stats['min']) else None,
+                "max": float(year_stats['max']) if pd.notna(year_stats['max']) else None,
+                "mean": float(year_stats['mean']) if pd.notna(year_stats['mean']) else None
             }
             
             # Kontrollera för framtida år
@@ -116,8 +116,8 @@ class IGDBDataValidator:
                     games_without_genres += 1
             
             validation_results["statistics"]["genres"] = {
-                "unique_genres": len(all_genres),
-                "games_without_genres": games_without_genres
+                "unique_genres": int(len(all_genres)),
+                "games_without_genres": int(games_without_genres)
             }
         
         # Kontrollera theme distribution
@@ -142,8 +142,8 @@ class IGDBDataValidator:
                     games_without_themes += 1
             
             validation_results["statistics"]["themes"] = {
-                "unique_themes": len(all_themes),
-                "games_without_themes": games_without_themes
+                "unique_themes": int(len(all_themes)),
+                "games_without_themes": int(games_without_themes)
             }
         
         # Kontrollera platform distribution
@@ -168,8 +168,8 @@ class IGDBDataValidator:
                     games_without_platforms += 1
             
             validation_results["statistics"]["platforms"] = {
-                "unique_platforms": len(all_platforms),
-                "games_without_platforms": games_without_platforms
+                "unique_platforms": int(len(all_platforms)),
+                "games_without_platforms": int(games_without_platforms)
             }
         
         logger.info(f"Validation klar. Issues: {len(validation_results['issues'])}")
@@ -190,7 +190,9 @@ class IGDBDataValidator:
         feature_results = {
             "validation_passed": True,
             "issues": [],
-            "feature_stats": {}
+            "genre_features": {},
+            "theme_features": {},
+            "platform_features": {}
         }
         
         # Kontrollera genre features
@@ -198,9 +200,9 @@ class IGDBDataValidator:
         if genre_features:
             genre_sum = df[genre_features].sum(axis=1)
             games_without_genres = (genre_sum == 0).sum()
-            feature_results["feature_stats"]["genre_features"] = {
-                "total_features": len(genre_features),
-                "games_without_genres": games_without_genres
+            feature_results["genre_features"] = {
+                "total_features": int(len(genre_features)),
+                "games_without_genres": int(games_without_genres)
             }
         
         # Kontrollera theme features
@@ -208,9 +210,9 @@ class IGDBDataValidator:
         if theme_features:
             theme_sum = df[theme_features].sum(axis=1)
             games_without_themes = (theme_sum == 0).sum()
-            feature_results["feature_stats"]["theme_features"] = {
-                "total_features": len(theme_features),
-                "games_without_themes": games_without_themes
+            feature_results["theme_features"] = {
+                "total_features": int(len(theme_features)),
+                "games_without_themes": int(games_without_themes)
             }
         
         # Kontrollera platform features
@@ -218,9 +220,9 @@ class IGDBDataValidator:
         if platform_features:
             platform_sum = df[platform_features].sum(axis=1)
             games_without_platforms = (platform_sum == 0).sum()
-            feature_results["feature_stats"]["platform_features"] = {
-                "total_features": len(platform_features),
-                "games_without_platforms": games_without_platforms
+            feature_results["platform_features"] = {
+                "total_features": int(len(platform_features)),
+                "games_without_platforms": int(games_without_platforms)
             }
         
         logger.info("Feature consistency validation klar")

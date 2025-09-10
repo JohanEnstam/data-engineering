@@ -97,7 +97,7 @@ API_PORT=8000
 ### Steg 6: Samla data
 ```bash
 # Viktigt: Aktivera venv först!
-source venv/bin/activate && python collect_data.py --games-limit 1000
+source venv/bin/activate && python collect_data.py --games-limit 100
 
 # Detta tar 5-10 minuter och samlar 1000 spel från IGDB
 ```
@@ -199,7 +199,7 @@ source venv/bin/activate && python -m uvicorn src.api_endpoints.main:app --host 
 ls -la data/processed/games_*.csv
 
 # Om tomt, kör data collection igen
-source venv/bin/activate && python collect_data.py --games-limit 1000
+source venv/bin/activate && python collect_data.py --games-limit 100
 ```
 
 ### Problem: "IGDB API error" eller "Authentication failed"
