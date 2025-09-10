@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # IGDB API Backend
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - CLIENT_ID=${CLIENT_ID}
+      - CLIENT_SECRET=${CLIENT_SECRET}
+    volumes:
+      - ./data:/app/data
+      - ./src:/app/src
+    depends_on:
+      - frontend
+    networks:
+      - igdb-network
+
+  # Next.js Frontend
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://api:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - igdb-network
+
+  # Development database (optional)
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=igdb_recommender
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - igdb-network
+
+volumes:
+  postgres_data:
+
+networks:
+  igdb-network:
+    driver: bridge

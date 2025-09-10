@@ -156,13 +156,10 @@ Thumbs.db
 
 # Docker
 .dockerignore
-Dockerfile
-docker-compose.yml
-docker-compose.yaml
 
 # Kubernetes
 *.yaml
-*.yml
+# *.yml  # Commented out to allow docker-compose.yml
 
 # Terraform
 *.tfstate
@@ -223,3 +220,27 @@ tmp/
 temp/
 *.tmp
 *.temp
+
+# Course materials (local reference only)
+de_agil_metodik/
+
+# Environment files
+.env
+.env.local
+.env.production
+# Allow .env.template for project setup
+
+# Next.js build artifacts
+.next/
+out/
+
+# Node.js dependencies
+node_modules/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Build directories
+build/
+dist/
+out/
