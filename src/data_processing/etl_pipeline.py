@@ -259,6 +259,54 @@ class IGDBETLPipeline:
         
         logger.info(f"Skapade {len(all_platforms)} platform features med namn")
         return df
+
+    def process_release_dates(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Processar release dates och konverterar ID:n till faktiska datum
+        
+        Args:
+            df: DataFrame med speldata
+            
+        Returns:
+            DataFrame med processade release dates
+        """
+        logger.info("Processar release dates")
+        
+        # Ladda release dates lookup data
+        release_dates_data = self.load_raw_data('release_dates')
+        if not release_dates_data:
+            logger.warning("Ingen release dates data hittades")
+            return df
+        
+        # Skapa lookup dictionary
+        release_dates_lookup = {rd['id']: rd for rd in release_dates_data}
+        
+        # Processa release dates för varje spel
+        for idx, row in df.iterrows():
+            release_date_id = row.get('release_date')
+            if release_date_id and release_date_id in release_dates_lookup:
+                rd_data = release_dates_lookup[release_date_id]
+                
+                # IGDB release dates kan ha olika format:
+                # - date: Unix timestamp (om tillgänglig)
+                # - y: år
+                # - m: månad
+                # - category: typ av release (0=primary, 1=port, etc.)
+                
+                if rd_data.get('date'):
+                    # Konvertera Unix timestamp till år
+                    try:
+                        import datetime
+                        release_year = datetime.datetime.fromtimestamp(rd_data['date']).year
+                        df.at[idx, 'release_year'] = release_year
+                    except:
+                        pass
+                elif rd_data.get('y'):
+                    # Använd bara året om det finns
+                    df.at[idx, 'release_year'] = rd_data['y']
+        
+        logger.info("Release dates processade")
+        return df
     
     def save_processed_data(self, df: pd.DataFrame, data_type: str, timestamp: str = None) -> str:
         """
@@ -311,6 +359,9 @@ class IGDBETLPipeline:
         df = self.create_genre_features(df)
         df = self.create_theme_features(df)
         df = self.create_platform_features(df)
+        
+        # Processa release dates
+        df = self.process_release_dates(df)
         
         # Spara processad data
         processed_file = self.save_processed_data(df, 'games', timestamp)

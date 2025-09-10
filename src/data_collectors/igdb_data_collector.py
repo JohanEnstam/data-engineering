@@ -205,6 +205,71 @@ class IGDBDataCollector:
         except Exception as e:
             logger.error(f"Fel vid hämtning av teman: {e}")
             return []
+
+    def collect_release_dates(self, release_date_ids: List[int]) -> List[Dict]:
+        """
+        Hämtar release dates från IGDB API baserat på ID:n
+        
+        Args:
+            release_date_ids: Lista med release date ID:n från spel
+            
+        Returns:
+            Lista med release date dictionaries
+        """
+        logger.info(f"Hämtar {len(release_date_ids)} release dates från IGDB API")
+        
+        try:
+            from dotenv import load_dotenv
+            import os
+            load_dotenv()
+            
+            client_id = os.getenv("CLIENT_ID")
+            client_secret = os.getenv("CLIENT_SECRET")
+            
+            if not client_id or not client_secret:
+                logger.error("CLIENT_ID eller CLIENT_SECRET saknas i .env")
+                return []
+            
+            # Autentisera
+            auth = self.client.authenticate(client_id, client_secret)
+            if not auth or 'access_token' not in auth:
+                logger.error("Autentisering misslyckades")
+                return []
+            
+            # Hämta release dates data
+            fields = ["id", "date", "y", "m", "category", "platform", "game"]
+            
+            # IGDB API har en limit på 500 per request, så vi behöver batcha
+            all_release_dates = []
+            batch_size = 500
+            
+            for i in range(0, len(release_date_ids), batch_size):
+                batch_ids = release_date_ids[i:i + batch_size]
+                
+                # Skapa query string för batch
+                ids_string = ",".join(map(str, batch_ids))
+                
+                self.client.api_fetch_with_where(
+                    url=f"https://api.igdb.com/v4/release_dates",
+                    client_id=client_id,
+                    access_token=auth["access_token"],
+                    data_fields=fields,
+                    data_limit=batch_size,
+                    data_where=f"id=({ids_string})"
+                )
+                
+                batch_data = self.client.data
+                all_release_dates.extend(batch_data)
+                
+                # Rate limiting - vänta lite mellan requests
+                time.sleep(0.25)
+            
+            logger.info(f"Hämtade {len(all_release_dates)} release dates")
+            return all_release_dates
+            
+        except Exception as e:
+            logger.error(f"Fel vid hämtning av release dates: {e}")
+            return []
     
     def save_raw_data(self, data: List[Dict], data_type: str, timestamp: str = None) -> str:
         """
@@ -268,6 +333,19 @@ class IGDBDataCollector:
         if themes:
             saved_files['themes'] = self.save_raw_data(themes, 'themes', timestamp)
         
+        # Hämta release dates för alla spel
+        release_date_ids = []
+        for game in games:
+            if game.get('release_dates'):
+                release_date_ids.extend(game['release_dates'])
+        
+        # Ta bort duplicerade ID:n
+        unique_release_date_ids = list(set(release_date_ids))
+        
+        release_dates = self.collect_release_dates(unique_release_date_ids)
+        if release_dates:
+            saved_files['release_dates'] = self.save_raw_data(release_dates, 'release_dates', timestamp)
+        
         # Spara metadata om hämtningen
         collection_metadata = {
             "timestamp": timestamp,
@@ -275,6 +353,7 @@ class IGDBDataCollector:
             "genres_count": len(genres),
             "platforms_count": len(platforms),
             "themes_count": len(themes),
+            "release_dates_count": len(release_dates),
             "files": saved_files
         }
         

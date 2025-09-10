@@ -98,6 +98,49 @@ class APIData:
         except Exception as e:
             logging.error(f"An error occurd when trying to fetch data: {e}")
 
+    def api_fetch_with_where(self, url: str, client_id: str, access_token: str, 
+                            data_fields: Optional[List[str]] = None, 
+                            data_limit: Optional[int] = None,
+                            data_where: Optional[str] = None) -> None:
+        """
+        Fetches data from the IGDB API with WHERE clause support
+        
+        Args:
+            url (str): The IGDB API endpoint URL
+            client_id (str): The client ID from Twitch Developer
+            access_token (str): The access token obtained from authentication
+            data_fields (Optional[List[str]]): Optional list of fields to fetch
+            data_limit (Optional[int]): Optional limit on the number of records
+            data_where (Optional[str]): Optional WHERE clause
+        """
+        try:
+            # Construct the data query with proper IGDB API syntax
+            data_query = f"fields {','.join(data_fields)};" if data_fields \
+                else "fields id;"
+            data_query += f" limit {data_limit};" if data_limit else " limit 10;"
+            
+            # Add WHERE clause if provided
+            if data_where:
+                data_query += f" where {data_where};"
+            
+            logging.info(f"IGDB Query: {data_query}")
+            
+            # Make the API request
+            response = requests.post(
+                url=url, 
+                headers={"Client-ID": client_id, 
+                        "Authorization": f"Bearer {access_token}"}, 
+                data=data_query)
+            
+            self.api_url = url
+            self.data = response.json()
+            
+            logging.info(f"IGDB Response status: {response.status_code}")
+            logging.info(f"IGDB Response data length: {len(self.data)}")
+            
+        except Exception as e:
+            logging.error(f"An error occurred when trying to fetch data: {e}")
+
 
 def main() -> int:
     logging.basicConfig(

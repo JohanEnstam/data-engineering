@@ -104,7 +104,7 @@ export function CollectionStats({ games, dataQuality }: CollectionStatsProps) {
 
   const platformData = Object.entries(platformCounts)
     .map(([platformId, count]) => ({
-      platform: lookups?.platforms[platformId] || `Platform ${platformId}`,
+      platform: lookups?.platforms[platformId] || `Unknown Platform ${platformId}`,
       count,
       percentage: (count / totalGames) * 100
     }))

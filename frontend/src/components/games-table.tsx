@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -16,6 +16,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Search, Filter, Gamepad2, Calendar, Star } from "lucide-react";
 import { Game } from "@/types/game";
 
+interface LookupTables {
+  genres: Record<string, string>;
+  themes: Record<string, string>;
+  platforms: Record<string, string>;
+}
+
 interface GamesTableProps {
   games: Game[];
 }
@@ -26,6 +32,23 @@ export function GamesTable({ games }: GamesTableProps) {
   const [filterTheme, setFilterTheme] = useState<string>("all");
   const [sortBy, setSortBy] = useState<keyof Game>("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [lookups, setLookups] = useState<LookupTables | null>(null);
+
+  // Load lookup tables
+  useEffect(() => {
+    const loadLookups = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/lookups');
+        if (response.ok) {
+          const data = await response.json();
+          setLookups(data);
+        }
+      } catch (error) {
+        console.error('Failed to load lookup tables:', error);
+      }
+    };
+    loadLookups();
+  }, []);
 
   // Get unique genres and themes for filtering
   const allGenres = Array.from(new Set(games.flatMap(game => game.genres)));
@@ -103,7 +126,7 @@ export function GamesTable({ games }: GamesTableProps) {
             <option value="all">All Genres</option>
             {allGenres.map(genreId => (
               <option key={genreId} value={genreId.toString()}>
-                Genre {genreId}
+                {lookups?.genres[genreId.toString()] || `Genre ${genreId}`}
               </option>
             ))}
           </select>
@@ -116,7 +139,7 @@ export function GamesTable({ games }: GamesTableProps) {
             <option value="all">All Themes</option>
             {allThemes.map(themeId => (
               <option key={themeId} value={themeId.toString()}>
-                Theme {themeId}
+                {lookups?.themes[themeId.toString()] || `Theme ${themeId}`}
               </option>
             ))}
           </select>
@@ -209,7 +232,7 @@ export function GamesTable({ games }: GamesTableProps) {
                   <div className="flex flex-wrap gap-1">
                     {game.genres.slice(0, 3).map((genreId) => (
                       <Badge key={genreId} variant="secondary" className="text-xs">
-                        {genreId}
+                        {lookups?.genres[genreId.toString()] || genreId}
                       </Badge>
                     ))}
                     {game.genres.length > 3 && (
@@ -223,7 +246,7 @@ export function GamesTable({ games }: GamesTableProps) {
                   <div className="flex flex-wrap gap-1">
                     {game.themes.slice(0, 2).map((themeId) => (
                       <Badge key={themeId} variant="outline" className="text-xs">
-                        {themeId}
+                        {lookups?.themes[themeId.toString()] || themeId}
                       </Badge>
                     ))}
                     {game.themes.length > 2 && (
