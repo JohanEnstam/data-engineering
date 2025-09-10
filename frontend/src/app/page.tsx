@@ -10,6 +10,7 @@ import { Game, DataQualityReport, BudgetInfo } from "@/types/game";
 import { GamesTable } from "@/components/games-table";
 import { DataQualityCard } from "@/components/data-quality-card";
 import { BudgetCard } from "@/components/budget-card";
+import { BudgetDashboard } from "@/components/budget-dashboard";
 import { CollectionStats } from "@/components/collection-stats";
 import { mockGames, mockDataQuality, mockBudgetInfo } from "@/lib/mock-data";
 
@@ -210,7 +211,7 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="budget" className="space-y-6">
-            <BudgetCard budgetInfo={budgetInfo} />
+            <BudgetDashboard />
           </TabsContent>
 
           <TabsContent value="stats" className="space-y-6">

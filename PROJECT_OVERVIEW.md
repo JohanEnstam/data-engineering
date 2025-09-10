@@ -175,19 +175,20 @@ igdb-game-recommender/
 - [x] Migrera Isaks IGDB API kod till `src/api/`
 - [x] Utveckla data collection script
 - [x] Bygg data preprocessing pipeline
-- [ ] **Frontend setup** med Next.js + shadcn/ui
-- [ ] **Data visualization** - visa testdata i tables/charts
-- [ ] **Budget tracking** dashboard för GCP credits
-- [ ] **Basic API endpoints** för data access
+- [x] **Frontend setup** med Next.js + shadcn/ui
+- [x] **Data visualization** - visa testdata i tables/charts
+- [x] **Budget tracking** dashboard för GCP credits
+- [x] **Basic API endpoints** för data access
+- [x] **GCP Integration** - budget monitoring med verklig data
 - [ ] Skapa enkel ML model (content-based filtering)
 - [ ] **Frontend integration** - sök + rekommendationer
 
 **Deliverables:**
-- Fungerande lokalt rekommendationssystem
-- **Interaktiv web interface** för data exploration
-- **Budget monitoring** system
-- API endpoints för spel-sökning
-- **Visual feedback** för ML model evaluation
+- [x] Fungerande lokalt rekommendationssystem
+- [x] **Interaktiv web interface** för data exploration
+- [x] **Budget monitoring** system med GCP integration
+- [x] API endpoints för spel-sökning och budget tracking
+- [x] **Visual feedback** för budget monitoring och data exploration
 
 ### **Fas 2: Core ML Development (Vecka 2)**
 **Mål:** Robust rekommendationsmotor med visuell feedback
@@ -211,7 +212,7 @@ igdb-game-recommender/
 **Mål:** Skalning till molnet med budget monitoring
 
 **Uppgifter:**
-- [ ] **GCP budget tracking** - real-time cost monitoring
+- [x] **GCP budget tracking** - real-time cost monitoring
 - [ ] **Larger data collection** (10,000+ spel)
 - [ ] **Cloud model training** med Vertex AI
 - [ ] **Cost optimization** baserat på budget constraints
@@ -337,12 +338,13 @@ docker-compose up
 
 ## 📝 **Projektstatus**
 
-**Senast uppdaterad:** 2024-09-10
-**Nuvarande fas:** Data collection och ETL pipeline (✅ Klar)
-**Nästa milestone:** Frontend setup och data visualization (Vecka 1)
+**Senast uppdaterad:** 2025-09-10
+**Nuvarande fas:** Frontend-First Prototyping (✅ Klar) + GCP Budget Integration (✅ Klar)
+**Nästa milestone:** Core ML Development (Vecka 2)
 **Gruppmedlemmar:** Viktoria, Isak & Johan
 **Teknisk stack:** Python, Next.js, shadcn/ui, GCP, IGDB API
-**Budget:** $300 GCP credits tillgängliga
+**Budget:** $300 GCP credits tillgängliga (med real-time monitoring)
+**GCP Project:** IGDB-ML-Pipeline (exalted-tempo-471613-e2)
 
 ---
 

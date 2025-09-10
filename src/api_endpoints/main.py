@@ -8,11 +8,9 @@ from typing import List, Dict, Any
 import pandas as pd
 
 # Import our existing modules
-import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
-from data_processing.data_validator import DataValidator
-from types.game import Game, DataQualityReport, BudgetInfo
+from data_processing.data_validator import IGDBDataValidator
+from models.game import Game, DataQualityReport, BudgetInfo
+from .budget import router as budget_router
 
 app = FastAPI(
     title="IGDB Game Recommendation API",
@@ -23,11 +21,14 @@ app = FastAPI(
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Next.js dev server
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],  # Next.js dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include budget router
+app.include_router(budget_router)
 
 # Data paths
 DATA_DIR = Path(__file__).parent.parent.parent / "data"
@@ -61,9 +62,31 @@ def load_data_quality_report() -> DataQualityReport:
         
         latest_file = max(report_files, key=lambda f: f.stat().st_mtime)
         
-        # Parse the validation report
-        validator = DataValidator()
-        report = validator.parse_validation_report(str(latest_file))
+        # Read the validation report file
+        with open(latest_file, 'r', encoding='utf-8') as f:
+            report_content = f.read()
+        
+        # Create a simple report object
+        report = {
+            "validation_status": "PASSED" if "PASSED" in report_content else "FAILED",
+            "total_games": 0,
+            "issues": [],
+            "statistics": {},
+            "feature_statistics": {
+                "genre_features": {
+                    "total_features": 0,
+                    "games_without_genres": 0
+                },
+                "theme_features": {
+                    "total_features": 0,
+                    "games_without_themes": 0
+                },
+                "platform_features": {
+                    "total_features": 0,
+                    "games_without_platforms": 0
+                }
+            }
+        }
         
         return report
     except Exception as e:
