@@ -1,7 +1,7 @@
 # 🎮 IGDB Spelrekommendationssystem
 
 Ett komplett spelrekommendationssystem med Google-liknande sökinterface, ML-baserade rekommendationer och real-time dashboard.
-ånt 
+
 ## 🎯 Vad systemet gör
 
 - **Sök spel** med autocomplete (som Google)
@@ -11,14 +11,16 @@ Ett komplett spelrekommendationssystem med Google-liknande sökinterface, ML-bas
 
 ## 🚀 Snabbstart för gruppmedlemmar
 
-### ⚡ **Super Snabbstart (om du har problem med venv)**
+### **Steg 1: Klona och navigera**
+```bash
+git clone https://github.com/JohanEnstam/data-engineering.git
+cd data-engineering
+```
+
+### **Steg 2: Sätt upp Python environment**
 
 #### **Mac/Linux:**
 ```bash
-# Klona och navigera
-git clone https://github.com/JohanEnstam/data-engineering.git
-cd data-engineering
-
 # Skapa och aktivera venv
 python -m venv venv
 source venv/bin/activate
@@ -29,27 +31,10 @@ which python  # Ska visa: /path/to/project/venv/bin/python
 
 # Installera dependencies
 pip install -r requirements.txt
-
-# Kopiera .env template
-cp .env.template .env
-# Redigera .env med dina Twitch credentials
-
-# Samla data (använd direkt sökväg för säkerhet)
-./venv/bin/python collect_data.py --games-limit 100
-
-# Starta backend
-./venv/bin/python -m uvicorn src.api_endpoints.main:app --host 0.0.0.0 --port 8000 --reload
-
-# I ny terminal: Starta frontend
-cd frontend && npm install && npm run dev
 ```
 
 #### **Windows:**
 ```bash
-# Klona och navigera
-git clone https://github.com/JohanEnstam/data-engineering.git
-cd data-engineering
-
 # Skapa och aktivera venv
 python -m venv venv
 venv\Scripts\activate
@@ -60,25 +45,56 @@ where python  # Ska visa: C:\path\to\project\venv\Scripts\python.exe
 
 # Installera dependencies
 pip install -r requirements.txt
-
-# Kopiera .env template
-copy .env.template .env
-# Redigera .env med dina Twitch credentials
-
-# Samla data (använd direkt sökväg för säkerhet)
-.\venv\Scripts\python.exe collect_data.py --games-limit 100
-
-# Starta backend
-.\venv\Scripts\python.exe -m uvicorn src.api_endpoints.main:app --host 0.0.0.0 --port 8000 --reload
-
-# I ny terminal: Starta frontend
-cd frontend && npm install && npm run dev
 ```
 
-### 🎯 **Om du får fel:**
-- **"ModuleNotFoundError"** → Använd `./venv/bin/python` istället för `python`
-- **"Python version conflict"** → Se troubleshooting-sektionen nedan
-- **"Connection refused"** → Kontrollera att backend körs på port 8000
+### **Steg 3: Konfigurera IGDB API credentials**
+
+**Du behöver först:**
+- Gå till [Twitch Developer Portal](https://dev.twitch.tv)
+- Skapa en ny applikation
+- Kopiera Client ID och Client Secret
+
+**Sedan konfigurera:**
+```bash
+# Kopiera .env template
+cp .env.template .env  # Mac/Linux
+copy .env.template .env  # Windows
+
+# Redigera .env med dina Twitch credentials
+nano .env  # eller använd valfri texteditor
+```
+
+### **Steg 4: Samla data från IGDB API**
+```bash
+# Mac/Linux
+./venv/bin/python collect_data.py --games-limit 100
+
+# Windows  
+.\venv\Scripts\python.exe collect_data.py --games-limit 100
+```
+
+### **Steg 5: Starta systemet**
+
+**Terminal 1 - Backend:**
+```bash
+# Mac/Linux
+./venv/bin/python -m uvicorn src.api_endpoints.main:app --host 0.0.0.0 --port 8000 --reload
+
+# Windows
+.\venv\Scripts\python.exe -m uvicorn src.api_endpoints.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### **Steg 6: Öppna systemet**
+- **Frontend:** http://localhost:3000
+- **Backend API:** http://localhost:8000
+- **API Docs:** http://localhost:8000/docs
 
 ### 🔍 **Verifiera att allt fungerar:**
 ```bash
@@ -87,86 +103,64 @@ cd frontend && npm install && npm run dev
 .\venv\Scripts\python.exe verify_setup.py  # Windows
 ```
 
-### 1. Klona och navigera
-```bash
-git clone https://github.com/JohanEnstam/data-engineering.git
-cd data-engineering
-```
-
-### 2. Sätt upp Python environment
-```bash
-# Skapa virtual environment
-python -m venv venv
-
-# Aktivera (välj rätt kommando för ditt OS)
-source venv/bin/activate  # Mac/Linux
-# ELLER
-venv\Scripts\activate     # Windows
-
-# VERIFIERA att venv är aktiverat (VIKTIGT!)
-which python  # Ska visa: /path/to/project/venv/bin/python
-python --version  # Ska visa Python 3.9.x
-
-# Installera dependencies
-pip install -r requirements.txt
-```
-
-**🚨 KRITISKT: Kontrollera att venv är aktiverat!**
-Om du ser fel som `ModuleNotFoundError: No module named 'pandas'`:
-```bash
-# Problem: Python är aliased eller venv inte aktiverat
-# Lösning: Använd direkt sökväg till venv python
-./venv/bin/python collect_data.py --games-limit 100
-```
-
-### 3. Konfigurera IGDB API
-```bash
-# Kopiera template
-cp .env.template .env
-
-# Redigera .env med dina Twitch credentials
-nano .env  # eller använd valfri texteditor
-```
-
-**Du behöver:**
-- Gå till [Twitch Developer Portal](https://dev.twitch.tv)
-- Skapa en ny applikation
-- Kopiera Client ID och Client Secret
-- Klistra in i `.env` filen
-
-### 4. Samla data (5-10 minuter)
-```bash
-# Metod 1: Aktivera venv först (rekommenderat)
-source venv/bin/activate && python collect_data.py --games-limit 100
-
-# Metod 2: Använd direkt sökväg (om venv-aktivering inte fungerar)
-./venv/bin/python collect_data.py --games-limit 100
-```
-
-### 5. Starta backend
-```bash
-# Terminal 1 - Backend
-# Metod 1: Aktivera venv först
-source venv/bin/activate && python -m uvicorn src.api_endpoints.main:app --host 0.0.0.0 --port 8000 --reload
-
-# Metod 2: Använd direkt sökväg (om venv-aktivering inte fungerar)
-./venv/bin/python -m uvicorn src.api_endpoints.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-### 6. Starta frontend
-```bash
-# Terminal 2 - Frontend
-cd frontend
-npm install
-npm run dev
-```
-
-### 7. Öppna systemet
-- **Frontend:** http://localhost:3000
-- **Backend API:** http://localhost:8000
-- **API Docs:** http://localhost:8000/docs
+### 🎯 **Om du får fel:**
+- **"ModuleNotFoundError"** → Använd `./venv/bin/python` istället för `python`
+- **"Python version conflict"** → Se troubleshooting-sektionen nedan
+- **"Connection refused"** → Kontrollera att backend körs på port 8000
 
 ## 🎮 Användning
+
+### 📊 **Data Collection Parametrar**
+```bash
+# Huvudparametrar för collect_data.py
+
+# Antal spel att hämta (default: 1000)
+./venv/bin/python collect_data.py --games-limit 100
+
+# Hoppa över data collection, kör endast ETL
+./venv/bin/python collect_data.py --skip-collection       
+
+# Hoppa över ETL, kör endast data collection  
+./venv/bin/python collect_data.py --skip-etl             
+
+# Hoppa över data validation
+./venv/bin/python collect_data.py --skip-validation       
+```
+
+**IGDB API Begränsningar:**
+- **Rate Limiting:** Automatisk delay (0.25s) mellan requests
+- **Batch Size:** Max 500 spel per API-anrop (hanteras automatiskt)
+- **Release Dates:** Separata API-anrop för faktiska datum
+- **Twitch Credentials:** Krävs för API-åtkomst
+
+**Rekommendationer:**
+- **100 spel:** Snabb test (~2-3 minuter)
+- **1000 spel:** Bra för utveckling (~10-15 minuter)  
+- **5000+ spel:** Produktionsdataset (~30+ minuter)
+
+### 🔧 **Andra viktiga kommandon**
+```bash
+# Verifiera att environment fungerar
+./venv/bin/python verify_setup.py
+
+# Träna ML-modell (efter data collection)
+./venv/bin/python -c "from src.models.game_recommender import GameRecommender; GameRecommender().train_model()"
+
+# Starta API med specifika inställningar
+./venv/bin/python run_api.py                    # Standard API server
+./venv/bin/python -m uvicorn src.api_endpoints.main:app --host 0.0.0.0 --port 8000 --reload
+
+# Kolla data quality
+curl http://localhost:8000/api/data-quality     # Data quality report
+curl http://localhost:8000/api/lookups          # Genre/theme/platform mappings
+```
+
+### 📁 **Viktiga filer och mappar**
+- **`.env`** - IGDB API credentials (kopiera från `.env.template`)
+- **`data/raw/`** - Rådata från IGDB API (JSON-filer)
+- **`data/processed/`** - Bearbetad data (CSV/JSON för ML)
+- **`data/models/`** - Tränade ML-modeller (.pkl-filer)
+- **`verify_setup.py`** - Environment verification script
 
 ### Sök och rekommendationer
 1. Gå till http://localhost:3000/recommendations
@@ -176,7 +170,7 @@ npm run dev
 
 ### Dashboard med riktig data
 1. Gå till http://localhost:3000
-2. **Overview tab:** Se 100 spel i tabellformat
+2. **Overview tab:** Se spel i tabellformat (antalet beror på --games-limit)
 3. **Statistics tab:** Se data quality metrics:
    - Rating range: 40.0 - 90.0 (genomsnitt: 66.9)
    - 20 unika genres, 20 unika themes, 44 unika platforms
@@ -274,16 +268,12 @@ curl http://localhost:8000/api/health
 ```bash
 # Kontrollera att data finns
 ls -la data/processed/games_*.csv
-# Om tomt, kör data collection igen
+# Om tomt, kör data collection igen med önskat antal spel
 ./venv/bin/python collect_data.py --games-limit 100
 ```
 
 ### Python version konflikter
 ```bash
-# Kontrollera Python version
-./venv/bin/python --version
-# Ska visa Python 3.9.x
-
 # Om du har Python 3.11/3.12 och får fel:
 # Skapa nytt venv med rätt version
 rm -rf venv
