@@ -56,15 +56,31 @@
 - [ ] **Enkel ML model** (content-based filtering)
 - [ ] **Frontend integration** - sök + rekommendationer
 
-### **Vecka 2: Core ML Development** ⭐ **NÄSTA PRIORITET**
+### **Vecka 2: Local-First ML Development** ⭐ **NÄSTA PRIORITET**
+**Strategi:** "Progressive Local-First" - utveckla och testa allt lokalt först
+
+- [ ] **Data Collection (1,000-2,000 spel)** - samla tillräckligt med data lokalt
 - [ ] **Progressive feature engineering** - core features (genres, themes)
-- [ ] **Local model training** på MacBook (1000+ spel)
-- [ ] **Manual evaluation system** - visuell feedback
-- [ ] **Model comparison** - testa olika algoritmer
+- [ ] **Local model training** på MacBook med scikit-learn
+- [ ] **Manual evaluation system** - "Ser dessa rekommendationer rimliga ut?"
+- [ ] **Frontend integration** - sök + rekommendationer i UI
+- [ ] **Model comparison** - testa olika algoritmer visuellt
 - [ ] **Performance optimization** för lokala constraints
 - [ ] **User feedback** system för model improvement
 
+**Varför lokalt först:**
+- ✅ **Snabb iteration** - testa idéer på minuter, inte timmar
+- ✅ **$0 kostnad** - ingen GCP-kostnad under utveckling
+- ✅ **Enklare debugging** - allt på din MacBook
+- ✅ **Lär dig systemet** innan du skalar upp
+
 ### **Vecka 3: Cloud Integration**
+**När du ska flytta till molnet:**
+- ✅ Du har en **fungerande modell** lokalt
+- ✅ Du vet vilka **features som fungerar**
+- ✅ Du vill ha **10,000+ spel** (för bättre rekommendationer)
+- ✅ Du vill **automatisera** data collection
+
 - [x] **GCP budget tracking** - real-time cost monitoring
 - [ ] **Larger data collection** (10,000+ spel)
 - [ ] **Cloud model training** med Vertex AI
@@ -100,19 +116,50 @@
 
 ## 💰 **Budget Management**
 
-### **GCP Credits: $300 tillgängliga**
-- **BigQuery:** ~$5-20/månad
-- **Cloud Run:** ~$10-30/månad  
-- **Vertex AI:** ~$50-200/månad
-- **Cloud Storage:** ~$1-5/månad
-- **Total estimat:** ~$66-255/månad
+### **GCP Budget Setup:**
+- **Budget Name:** AI24S-Data-Engineering-IGDB
+- **Budget Amount:** kr100.00/månad
+- **Budget Alerts:** 50%, 90%, 100%, 110% av budget
+- **GCP Credits:** $300 tillgängliga (för större projekt)
+
+### **Kostnadsuppskattning:**
+- **Lokal utveckling:** $0 (1-2 veckor)
+- **Cloud deployment:** $20-50/månad (när du är redo)
+- **Stor data collection:** $5-20 (en gång för 10,000+ spel)
 
 ### **Budget Tracking Features:**
-- [ ] **Real-time cost monitoring** från GCP API
+- [x] **Real-time cost monitoring** från GCP API
+- [x] **Budget alerts** när du närmar dig gränser
+- [x] **Frontend dashboard** för budget visualization
 - [ ] **Cost prediction** baserat på usage patterns
-- [ ] **Budget alerts** när du närmar dig gränser
 - [ ] **Resource optimization** suggestions
-- [ ] **Frontend dashboard** för budget visualization
+
+---
+
+## 🎯 **Konkreta Nästa Steg - Idag**
+
+### **Steg 1: Data Collection (1-2 timmar)**
+```bash
+# Uppdatera collect_data.py för 1,000 spel
+python collect_data.py --games-limit 1000 --output-dir data/raw
+```
+
+### **Steg 2: ML Model Development (2-3 dagar)**
+```python
+# Bygg enkel content-based filtering
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+```
+
+### **Steg 3: Frontend Integration (1-2 dagar)**
+- Lägg till sökfunktion i Next.js app
+- Visa rekommendationer med cover-bilder
+- Testa olika spel och se om rekommendationerna känns rimliga
+
+### **Steg 4: Visual Evaluation**
+- "Ser dessa rekommendationer rimliga ut?"
+- Testa med olika spel du känner till
+- Iterera på algoritmer baserat på feedback
 
 ---
 

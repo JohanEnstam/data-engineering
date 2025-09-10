@@ -165,9 +165,9 @@ igdb-game-recommender/
 
 ---
 
-## 🚀 **Utvecklingsfaser**
+## 🚀 **Utvecklingsfaser - Uppdaterad Strategi**
 
-### **Fas 1: Frontend-First Prototyping (Vecka 1)**
+### **Fas 1: Frontend-First Prototyping (Vecka 1)** ⭐ **KLAR** ✅
 **Mål:** Visuell feedback och iterativ utveckling
 
 **Uppgifter:**
@@ -180,8 +180,6 @@ igdb-game-recommender/
 - [x] **Budget tracking** dashboard för GCP credits
 - [x] **Basic API endpoints** för data access
 - [x] **GCP Integration** - budget monitoring med verklig data
-- [ ] Skapa enkel ML model (content-based filtering)
-- [ ] **Frontend integration** - sök + rekommendationer
 
 **Deliverables:**
 - [x] Fungerande lokalt rekommendationssystem
@@ -190,12 +188,15 @@ igdb-game-recommender/
 - [x] API endpoints för spel-sökning och budget tracking
 - [x] **Visual feedback** för budget monitoring och data exploration
 
-### **Fas 2: Core ML Development (Vecka 2)**
-**Mål:** Robust rekommendationsmotor med visuell feedback
+### **Fas 2: Local-First ML Development (Vecka 2)** ⭐ **NÄSTA PRIORITET**
+**Mål:** Bygga robust rekommendationsmotor lokalt innan cloud scaling
+
+**Strategi:** "Progressive Local-First" - utveckla och testa allt lokalt först
 
 **Uppgifter:**
+- [ ] **Data Collection (1,000-2,000 spel)** - samla tillräckligt med data lokalt
 - [ ] **Progressive feature engineering** - börja med core features (genres, themes)
-- [ ] **Local model training** på MacBook (1000+ spel)
+- [ ] **Local model training** på MacBook med scikit-learn
 - [ ] **Manual evaluation system** - "Ser dessa rekommendationer rimliga ut?"
 - [ ] **Frontend integration** - sök + rekommendationer i UI
 - [ ] **Model comparison** - testa olika algoritmer visuellt
@@ -208,8 +209,20 @@ igdb-game-recommender/
 - **Optimized local training** pipeline
 - **User feedback** system för model improvement
 
+**Varför lokalt först:**
+- ✅ **Snabb iteration** - testa idéer på minuter, inte timmar
+- ✅ **$0 kostnad** - ingen GCP-kostnad under utveckling
+- ✅ **Enklare debugging** - allt på din MacBook
+- ✅ **Lär dig systemet** innan du skalar upp
+
 ### **Fas 3: Cloud Integration (Vecka 3)**
-**Mål:** Skalning till molnet med budget monitoring
+**Mål:** Skalning till molnet när lokal modell fungerar bra
+
+**När du ska flytta till molnet:**
+- ✅ Du har en **fungerande modell** lokalt
+- ✅ Du vet vilka **features som fungerar**
+- ✅ Du vill ha **10,000+ spel** (för bättre rekommendationer)
+- ✅ Du vill **automatisera** data collection
 
 **Uppgifter:**
 - [x] **GCP budget tracking** - real-time cost monitoring
@@ -292,7 +305,9 @@ docker-compose up
 ```
 
 ### **Cloud Environment**
-- **GCP Project:** igdb-game-recommender
+- **GCP Project:** IGDB-ML-Pipeline (exalted-tempo-471613-e2)
+- **Budget:** AI24S-Data-Engineering-IGDB (kr100.00/månad)
+- **Budget Alerts:** 50%, 90%, 100%, 110% av budget
 - **BigQuery Dataset:** game_data
 - **Cloud Storage:** igdb-raw-data
 - **Cloud Run:** API och Frontend
@@ -340,11 +355,12 @@ docker-compose up
 
 **Senast uppdaterad:** 2025-09-10
 **Nuvarande fas:** Frontend-First Prototyping (✅ Klar) + GCP Budget Integration (✅ Klar)
-**Nästa milestone:** Core ML Development (Vecka 2)
+**Nästa milestone:** Local-First ML Development (Vecka 2)
 **Gruppmedlemmar:** Viktoria, Isak & Johan
 **Teknisk stack:** Python, Next.js, shadcn/ui, GCP, IGDB API
-**Budget:** $300 GCP credits tillgängliga (med real-time monitoring)
+**Budget:** AI24S-Data-Engineering-IGDB (kr100.00/månad) + $300 GCP credits
 **GCP Project:** IGDB-ML-Pipeline (exalted-tempo-471613-e2)
+**Strategi:** Progressive Local-First Development
 
 ---
 
