@@ -96,34 +96,80 @@ class IGDBDataValidator:
         # Kontrollera genre distribution
         if 'genres' in df.columns:
             all_genres = set()
+            games_without_genres = 0
             for genres in df['genres']:
-                all_genres.update(genres)
+                if isinstance(genres, str):
+                    # Parse string like "[5, 32]" to list
+                    try:
+                        import ast
+                        genres_list = ast.literal_eval(genres)
+                        all_genres.update(genres_list)
+                        if len(genres_list) == 0:
+                            games_without_genres += 1
+                    except:
+                        games_without_genres += 1
+                elif isinstance(genres, list):
+                    all_genres.update(genres)
+                    if len(genres) == 0:
+                        games_without_genres += 1
+                else:
+                    games_without_genres += 1
             
             validation_results["statistics"]["genres"] = {
                 "unique_genres": len(all_genres),
-                "games_without_genres": df['genres'].apply(len).eq(0).sum()
+                "games_without_genres": games_without_genres
             }
         
         # Kontrollera theme distribution
         if 'themes' in df.columns:
             all_themes = set()
+            games_without_themes = 0
             for themes in df['themes']:
-                all_themes.update(themes)
+                if isinstance(themes, str):
+                    try:
+                        import ast
+                        themes_list = ast.literal_eval(themes)
+                        all_themes.update(themes_list)
+                        if len(themes_list) == 0:
+                            games_without_themes += 1
+                    except:
+                        games_without_themes += 1
+                elif isinstance(themes, list):
+                    all_themes.update(themes)
+                    if len(themes) == 0:
+                        games_without_themes += 1
+                else:
+                    games_without_themes += 1
             
             validation_results["statistics"]["themes"] = {
                 "unique_themes": len(all_themes),
-                "games_without_themes": df['themes'].apply(len).eq(0).sum()
+                "games_without_themes": games_without_themes
             }
         
         # Kontrollera platform distribution
         if 'platforms' in df.columns:
             all_platforms = set()
+            games_without_platforms = 0
             for platforms in df['platforms']:
-                all_platforms.update(platforms)
+                if isinstance(platforms, str):
+                    try:
+                        import ast
+                        platforms_list = ast.literal_eval(platforms)
+                        all_platforms.update(platforms_list)
+                        if len(platforms_list) == 0:
+                            games_without_platforms += 1
+                    except:
+                        games_without_platforms += 1
+                elif isinstance(platforms, list):
+                    all_platforms.update(platforms)
+                    if len(platforms) == 0:
+                        games_without_platforms += 1
+                else:
+                    games_without_platforms += 1
             
             validation_results["statistics"]["platforms"] = {
                 "unique_platforms": len(all_platforms),
-                "games_without_platforms": df['platforms'].apply(len).eq(0).sum()
+                "games_without_platforms": games_without_platforms
             }
         
         logger.info(f"Validation klar. Issues: {len(validation_results['issues'])}")

@@ -3,12 +3,12 @@ from pydantic import BaseModel
 
 class Game(BaseModel):
     id: int
-    name: str
-    summary: str
+    name: Optional[str] = None
+    summary: Optional[str] = None
     storyline: Optional[str] = None
     rating: Optional[float] = None
     rating_count: int = 0
-    release_date: Optional[str] = None
+    release_date: Optional[Any] = None
     release_year: Optional[int] = None
     genres: List[int] = []
     genre_count: int = 0

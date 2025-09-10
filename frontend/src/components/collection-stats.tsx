@@ -290,26 +290,26 @@ export function CollectionStats({ games, dataQuality }: CollectionStatsProps) {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-3 bg-green-50 rounded-lg">
                 <div className="text-2xl font-bold text-green-600">
-                  {dataQuality.statistics.genres.unique_genres}
+                  {dataQuality.statistics?.genres?.unique_genres || 0}
                 </div>
                 <div className="text-sm text-gray-600">Unique Genres</div>
               </div>
               <div className="text-center p-3 bg-blue-50 rounded-lg">
                 <div className="text-2xl font-bold text-blue-600">
-                  {dataQuality.statistics.themes.unique_themes}
+                  {dataQuality.statistics?.themes?.unique_themes || 0}
                 </div>
                 <div className="text-sm text-gray-600">Unique Themes</div>
               </div>
               <div className="text-center p-3 bg-purple-50 rounded-lg">
                 <div className="text-2xl font-bold text-purple-600">
-                  {dataQuality.statistics.platforms.unique_platforms}
+                  {dataQuality.statistics?.platforms?.unique_platforms || 0}
                 </div>
                 <div className="text-sm text-gray-600">Unique Platforms</div>
               </div>
               <div className="text-center p-3 bg-orange-50 rounded-lg">
                 <div className="text-2xl font-bold text-orange-600">
-                  {dataQuality.feature_statistics.genre_features.total_features + 
-                   dataQuality.feature_statistics.theme_features.total_features}
+                  {(dataQuality.feature_statistics?.genre_features?.total_features || 0) + 
+                   (dataQuality.feature_statistics?.theme_features?.total_features || 0)}
                 </div>
                 <div className="text-sm text-gray-600">ML Features</div>
               </div>

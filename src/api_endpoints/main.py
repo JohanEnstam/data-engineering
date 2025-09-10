@@ -58,46 +58,70 @@ def load_games_data() -> List[Game]:
         print(f"Error loading games data: {e}")
         return []
 
-def load_data_quality_report() -> DataQualityReport:
-    """Load data quality report from the validation report"""
+def load_games_dataframe() -> pd.DataFrame:
+    """Load games data as DataFrame for validation"""
     try:
-        # Find the most recent validation report
-        report_files = list(PROCESSED_DIR.glob("validation_report_*.txt"))
-        if not report_files:
+        # Find the most recent games CSV file
+        csv_files = list(PROCESSED_DIR.glob("games_*.csv"))
+        if not csv_files:
             return None
         
-        latest_file = max(report_files, key=lambda f: f.stat().st_mtime)
+        latest_file = max(csv_files, key=lambda f: f.stat().st_mtime)
         
-        # Read the validation report file
-        with open(latest_file, 'r', encoding='utf-8') as f:
-            report_content = f.read()
-        
-        # Create a simple report object
-        report = {
-            "validation_status": "PASSED" if "PASSED" in report_content else "FAILED",
-            "total_games": 0,
-            "issues": [],
-            "statistics": {},
-            "feature_statistics": {
-                "genre_features": {
-                    "total_features": 0,
-                    "games_without_genres": 0
-                },
-                "theme_features": {
-                    "total_features": 0,
-                    "games_without_themes": 0
-                },
-                "platform_features": {
-                    "total_features": 0,
-                    "games_without_platforms": 0
+        # Load as DataFrame
+        df = pd.read_csv(latest_file)
+        return df
+    except Exception as e:
+        print(f"Error loading games dataframe: {e}")
+        return None
+
+def load_data_quality_report() -> DataQualityReport:
+    """Load data quality report by running validation on current data"""
+    try:
+        # Load the most recent games data
+        games_df = load_games_dataframe()
+        if games_df is None or games_df.empty:
+            return DataQualityReport(
+                total_games=0,
+                validation_status="NO_DATA",
+                issues=["No games data found"],
+                statistics={},
+                feature_statistics={
+                    "genre_features": {"total_features": 0, "games_without_genres": 0},
+                    "theme_features": {"total_features": 0, "games_without_themes": 0},
+                    "platform_features": {"total_features": 0, "games_without_platforms": 0}
                 }
-            }
-        }
+            )
+        
+        # Run validation
+        from data_processing.data_validator import IGDBDataValidator
+        validator = IGDBDataValidator()
+        validation_results = validator.validate_games_data(games_df)
+        feature_results = validator.validate_feature_consistency(games_df)
+        
+        # Create report
+        report = DataQualityReport(
+            total_games=validation_results["total_games"],
+            validation_status="PASSED" if validation_results["validation_passed"] else "FAILED",
+            issues=validation_results["issues"],
+            statistics=validation_results["statistics"],
+            feature_statistics=feature_results
+        )
         
         return report
     except Exception as e:
         print(f"Error loading data quality report: {e}")
-        return None
+        return DataQualityReport(
+            total_games=0,
+            validation_status="ERROR",
+            issues=[f"Error: {str(e)}"],
+            statistics={},
+            feature_statistics={
+                "genre_features": {"total_features": 0, "games_without_genres": 0},
+                "theme_features": {"total_features": 0, "games_without_themes": 0},
+                "platform_features": {"total_features": 0, "games_without_platforms": 0}
+            }
+        )
 
 def load_budget_info() -> BudgetInfo:
     """Load budget information (mock data for now)"""
