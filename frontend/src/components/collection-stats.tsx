@@ -1,10 +1,17 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Gamepad2, Calendar, Star, Tag, Palette, Monitor } from "lucide-react";
 import { Game, DataQualityReport } from "@/types/game";
+
+interface LookupTables {
+  genres: Record<string, string>;
+  themes: Record<string, string>;
+  platforms: Record<string, string>;
+}
 
 interface CollectionStatsProps {
   games: Game[];
@@ -12,6 +19,24 @@ interface CollectionStatsProps {
 }
 
 export function CollectionStats({ games, dataQuality }: CollectionStatsProps) {
+  const [lookups, setLookups] = useState<LookupTables | null>(null);
+
+  // Load lookup tables
+  useEffect(() => {
+    const loadLookups = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/lookups');
+        if (response.ok) {
+          const data = await response.json();
+          setLookups(data);
+        }
+      } catch (error) {
+        console.error('Failed to load lookup tables:', error);
+      }
+    };
+    loadLookups();
+  }, []);
+
   // Calculate statistics
   const totalGames = games.length;
   const gamesWithRatings = games.filter(game => game.rating !== null).length;
@@ -30,7 +55,7 @@ export function CollectionStats({ games, dataQuality }: CollectionStatsProps) {
 
   const genreData = Object.entries(genreCounts)
     .map(([genreId, count]) => ({
-      genre: `Genre ${genreId}`,
+      genre: lookups?.genres[genreId] || `Genre ${genreId}`,
       count,
       percentage: (count / totalGames) * 100
     }))
@@ -47,7 +72,7 @@ export function CollectionStats({ games, dataQuality }: CollectionStatsProps) {
 
   const themeData = Object.entries(themeCounts)
     .map(([themeId, count]) => ({
-      theme: `Theme ${themeId}`,
+      theme: lookups?.themes[themeId] || `Theme ${themeId}`,
       count,
       percentage: (count / totalGames) * 100
     }))
@@ -79,7 +104,7 @@ export function CollectionStats({ games, dataQuality }: CollectionStatsProps) {
 
   const platformData = Object.entries(platformCounts)
     .map(([platformId, count]) => ({
-      platform: `Platform ${platformId}`,
+      platform: lookups?.platforms[platformId] || `Platform ${platformId}`,
       count,
       percentage: (count / totalGames) * 100
     }))

@@ -157,7 +157,7 @@ class IGDBETLPipeline:
     
     def create_genre_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Skapar one-hot encoded features för genrer
+        Skapar one-hot encoded features för genrer med faktiska namn
         
         Args:
             df: DataFrame med speldata
@@ -167,25 +167,32 @@ class IGDBETLPipeline:
         """
         logger.info("Skapar genre features")
         
+        # Ladda genre lookup data
+        genres_data = self.load_raw_data('genres')
+        genre_lookup = {genre['id']: genre['name'] for genre in genres_data}
+        
         # Samla alla unika genre ID:n
         all_genres = set()
         for genres in df['genres']:
             if isinstance(genres, list):
                 all_genres.update(genres)
         
-        # Skapa one-hot encoded kolumner
+        # Skapa one-hot encoded kolumner med faktiska namn
         for genre_id in all_genres:
-            if genre_id:  # Skip empty values
-                df[f'genre_{genre_id}'] = df['genres'].apply(
+            if genre_id and genre_id in genre_lookup:  # Skip empty values and missing lookups
+                genre_name = genre_lookup[genre_id]
+                # Ersätt specialtecken och gör kolumnnamn säkra
+                safe_name = genre_name.replace(' ', '_').replace('-', '_').replace('&', 'and').replace('/', '_')
+                df[f'genre_{safe_name}'] = df['genres'].apply(
                     lambda x: 1 if isinstance(x, list) and genre_id in x else 0
                 )
         
-        logger.info(f"Skapade {len(all_genres)} genre features")
+        logger.info(f"Skapade {len(all_genres)} genre features med namn")
         return df
     
     def create_theme_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Skapar one-hot encoded features för teman
+        Skapar one-hot encoded features för teman med faktiska namn
         
         Args:
             df: DataFrame med speldata
@@ -195,25 +202,32 @@ class IGDBETLPipeline:
         """
         logger.info("Skapar theme features")
         
+        # Ladda theme lookup data
+        themes_data = self.load_raw_data('themes')
+        theme_lookup = {theme['id']: theme['name'] for theme in themes_data}
+        
         # Samla alla unika theme ID:n
         all_themes = set()
         for themes in df['themes']:
             if isinstance(themes, list):
                 all_themes.update(themes)
         
-        # Skapa one-hot encoded kolumner
+        # Skapa one-hot encoded kolumner med faktiska namn
         for theme_id in all_themes:
-            if theme_id:  # Skip empty values
-                df[f'theme_{theme_id}'] = df['themes'].apply(
+            if theme_id and theme_id in theme_lookup:  # Skip empty values and missing lookups
+                theme_name = theme_lookup[theme_id]
+                # Ersätt specialtecken och gör kolumnnamn säkra
+                safe_name = theme_name.replace(' ', '_').replace('-', '_').replace('&', 'and').replace('/', '_')
+                df[f'theme_{safe_name}'] = df['themes'].apply(
                     lambda x: 1 if isinstance(x, list) and theme_id in x else 0
                 )
         
-        logger.info(f"Skapade {len(all_themes)} theme features")
+        logger.info(f"Skapade {len(all_themes)} theme features med namn")
         return df
     
     def create_platform_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Skapar one-hot encoded features för plattformar
+        Skapar one-hot encoded features för plattformar med faktiska namn
         
         Args:
             df: DataFrame med speldata
@@ -223,20 +237,27 @@ class IGDBETLPipeline:
         """
         logger.info("Skapar platform features")
         
+        # Ladda platform lookup data
+        platforms_data = self.load_raw_data('platforms')
+        platform_lookup = {platform['id']: platform['name'] for platform in platforms_data}
+        
         # Samla alla unika platform ID:n
         all_platforms = set()
         for platforms in df['platforms']:
             if isinstance(platforms, list):
                 all_platforms.update(platforms)
         
-        # Skapa one-hot encoded kolumner
+        # Skapa one-hot encoded kolumner med faktiska namn
         for platform_id in all_platforms:
-            if platform_id:  # Skip empty values
-                df[f'platform_{platform_id}'] = df['platforms'].apply(
+            if platform_id and platform_id in platform_lookup:  # Skip empty values and missing lookups
+                platform_name = platform_lookup[platform_id]
+                # Ersätt specialtecken och gör kolumnnamn säkra
+                safe_name = platform_name.replace(' ', '_').replace('-', '_').replace('&', 'and').replace('/', '_').replace('(', '').replace(')', '')
+                df[f'platform_{safe_name}'] = df['platforms'].apply(
                     lambda x: 1 if isinstance(x, list) and platform_id in x else 0
                 )
         
-        logger.info(f"Skapade {len(all_platforms)} platform features")
+        logger.info(f"Skapade {len(all_platforms)} platform features med namn")
         return df
     
     def save_processed_data(self, df: pd.DataFrame, data_type: str, timestamp: str = None) -> str:

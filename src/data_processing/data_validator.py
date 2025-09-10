@@ -202,7 +202,8 @@ class IGDBDataValidator:
             games_without_genres = (genre_sum == 0).sum()
             feature_results["genre_features"] = {
                 "total_features": int(len(genre_features)),
-                "games_without_genres": int(games_without_genres)
+                "games_without_genres": int(games_without_genres),
+                "feature_names": genre_features
             }
         
         # Kontrollera theme features
@@ -212,7 +213,8 @@ class IGDBDataValidator:
             games_without_themes = (theme_sum == 0).sum()
             feature_results["theme_features"] = {
                 "total_features": int(len(theme_features)),
-                "games_without_themes": int(games_without_themes)
+                "games_without_themes": int(games_without_themes),
+                "feature_names": theme_features
             }
         
         # Kontrollera platform features
@@ -222,7 +224,8 @@ class IGDBDataValidator:
             games_without_platforms = (platform_sum == 0).sum()
             feature_results["platform_features"] = {
                 "total_features": int(len(platform_features)),
-                "games_without_platforms": int(games_without_platforms)
+                "games_without_platforms": int(games_without_platforms),
+                "feature_names": platform_features
             }
         
         logger.info("Feature consistency validation klar")
@@ -273,12 +276,19 @@ class IGDBDataValidator:
             report.append("")
         
         # Feature stats
-        if feature_results['feature_stats']:
+        if feature_results:
             report.append("FEATURE STATISTICS:")
-            for category, stats in feature_results['feature_stats'].items():
-                report.append(f"  {category.upper()}:")
-                for key, value in stats.items():
-                    report.append(f"    {key}: {value}")
+            for category, stats in feature_results.items():
+                if isinstance(stats, dict) and category.endswith('_features'):
+                    report.append(f"  {category.upper()}:")
+                    for key, value in stats.items():
+                        if key == 'feature_names':
+                            report.append(f"    {key}: {len(value)} features")
+                            # Visa första 5 feature-namn som exempel
+                            sample_names = value[:5]
+                            report.append(f"      Sample: {', '.join(sample_names)}")
+                        else:
+                            report.append(f"    {key}: {value}")
             report.append("")
         
         # Data types

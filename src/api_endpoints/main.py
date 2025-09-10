@@ -237,6 +237,57 @@ async def get_recommendations(game_id: int, limit: int = 5):
     recommendations.sort(key=lambda x: x["similarity_score"], reverse=True)
     return recommendations[:limit]
 
+@app.get("/api/lookups")
+async def get_lookups():
+    """Get lookup tables for genres, themes, and platforms"""
+    try:
+        # Load raw lookup data
+        raw_dir = DATA_DIR / "raw"
+        
+        # Load genres
+        genres_files = list(raw_dir.glob("genres_*.json"))
+        if genres_files:
+            latest_genres = max(genres_files, key=lambda f: f.stat().st_mtime)
+            with open(latest_genres, 'r', encoding='utf-8') as f:
+                genres_data = json.load(f)
+            genres_lookup = {genre['id']: genre['name'] for genre in genres_data}
+        else:
+            genres_lookup = {}
+        
+        # Load themes
+        themes_files = list(raw_dir.glob("themes_*.json"))
+        if themes_files:
+            latest_themes = max(themes_files, key=lambda f: f.stat().st_mtime)
+            with open(latest_themes, 'r', encoding='utf-8') as f:
+                themes_data = json.load(f)
+            themes_lookup = {theme['id']: theme['name'] for theme in themes_data}
+        else:
+            themes_lookup = {}
+        
+        # Load platforms
+        platforms_files = list(raw_dir.glob("platforms_*.json"))
+        if platforms_files:
+            latest_platforms = max(platforms_files, key=lambda f: f.stat().st_mtime)
+            with open(latest_platforms, 'r', encoding='utf-8') as f:
+                platforms_data = json.load(f)
+            platforms_lookup = {platform['id']: platform['name'] for platform in platforms_data}
+        else:
+            platforms_lookup = {}
+        
+        return {
+            "genres": genres_lookup,
+            "themes": themes_lookup,
+            "platforms": platforms_lookup
+        }
+        
+    except Exception as e:
+        print(f"Error loading lookup data: {e}")
+        return {
+            "genres": {},
+            "themes": {},
+            "platforms": {}
+        }
+
 @app.get("/api/stats")
 async def get_stats():
     """Get collection statistics"""

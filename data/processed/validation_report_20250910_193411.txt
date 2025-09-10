@@ -1,0 +1,131 @@
+============================================================
+IGDB DATA QUALITY REPORT
+============================================================
+Total spel: 100
+Validation status: PASSED
+
+ISSUES:
+  - Kolumner med >50% missing data: {'storyline': 76, 'release_year': 100, 'cover_url': 100}
+
+STATISTICS:
+  RATING:
+    min: 40.00
+    max: 90.00
+    mean: 66.89
+    std: 11.85
+  RELEASE_YEAR:
+    min: None
+    max: None
+    mean: None
+  GENRES:
+    unique_genres: 20
+    games_without_genres: 0
+  THEMES:
+    unique_themes: 20
+    games_without_themes: 16
+  PLATFORMS:
+    unique_platforms: 44
+    games_without_platforms: 0
+
+FEATURE STATISTICS:
+  GENRE_FEATURES:
+    total_features: 21
+    games_without_genres: 0
+    feature_names: 21 features
+      Sample: genre_count, genre_Point_and_click, genre_Fighting, genre_Shooter, genre_Music
+  THEME_FEATURES:
+    total_features: 21
+    games_without_themes: 16
+    feature_names: 21 features
+      Sample: theme_count, theme_Action, theme_Fantasy, theme_Science_fiction, theme_Horror
+  PLATFORM_FEATURES:
+    total_features: 23
+    games_without_platforms: 0
+    feature_names: 23 features
+      Sample: platform_count, platform_Linux, platform_PC_Microsoft_Windows, platform_PlayStation_2, platform_PlayStation_3
+
+DATA TYPES:
+  id: int64
+  name: object
+  summary: object
+  storyline: object
+  rating: float64
+  rating_count: int64
+  release_date: int64
+  release_year: float64
+  genres: object
+  genre_count: int64
+  themes: object
+  theme_count: int64
+  platforms: object
+  platform_count: int64
+  game_modes: object
+  player_perspectives: object
+  cover_id: float64
+  cover_url: float64
+  screenshot_ids: object
+  screenshot_count: int64
+  website_ids: object
+  genre_Point_and_click: int64
+  genre_Fighting: int64
+  genre_Shooter: int64
+  genre_Music: int64
+  genre_Platform: int64
+  genre_Puzzle: int64
+  genre_Racing: int64
+  genre_Real_Time_Strategy_(RTS): int64
+  genre_Role_playing_(RPG): int64
+  genre_Simulator: int64
+  genre_Sport: int64
+  genre_Strategy: int64
+  genre_Turn_based_strategy_(TBS): int64
+  genre_Tactical: int64
+  genre_Hack_and_slash_Beat_'em_up: int64
+  genre_Adventure: int64
+  genre_Indie: int64
+  genre_Arcade: int64
+  genre_Visual_Novel: int64
+  genre_Card_and_Board_Game: int64
+  theme_Action: int64
+  theme_Fantasy: int64
+  theme_Science_fiction: int64
+  theme_Horror: int64
+  theme_Thriller: int64
+  theme_Survival: int64
+  theme_Historical: int64
+  theme_Stealth: int64
+  theme_Comedy: int64
+  theme_Drama: int64
+  theme_Non_fiction: int64
+  theme_Sandbox: int64
+  theme_Educational: int64
+  theme_Kids: int64
+  theme_Open_world: int64
+  theme_Party: int64
+  theme_4X_(explore,_expand,_exploit,_and_exterminate): int64
+  theme_Erotic: int64
+  theme_Mystery: int64
+  theme_Romance: int64
+  platform_Linux: int64
+  platform_PC_Microsoft_Windows: int64
+  platform_PlayStation_2: int64
+  platform_PlayStation_3: int64
+  platform_Xbox_360: int64
+  platform_DOS: int64
+  platform_Commodore_C64_128_MAX: int64
+  platform_Nintendo_DS: int64
+  platform_Turbografx_16_PC_Engine_CD: int64
+  platform_Sega_Saturn: int64
+  platform_Sega_Game_Gear: int64
+  platform_SteamVR: int64
+  platform_PlayStation_VR: int64
+  platform_iOS: int64
+  platform_PlayStation_5: int64
+  platform_Wii_U: int64
+  platform_PlayStation_Vita: int64
+  platform_PlayStation_4: int64
+  platform_Sega_CD: int64
+  platform_TurboGrafx_16_PC_Engine: int64
+  platform_Virtual_Boy: int64
+  platform_Apple_IIGS: int64
+============================================================
