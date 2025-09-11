@@ -38,18 +38,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
-    - name: Cache Node.js dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-          
     - name: Install Node.js dependencies
       run: |
         cd frontend
-        npm ci
+        npm install
         
     - name: Run Python linting
       run: |
