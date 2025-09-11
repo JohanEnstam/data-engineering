@@ -67,9 +67,9 @@ async def search_games(
         for result in results:
             cover_id = result.get("cover_id")
             if cover_id and not pd.isna(cover_id):
-                result["cover_url"] = (
-                    f"https://images.igdb.com/igdb/image/upload/t_cover_big/{int(cover_id)}.jpg"
-                )
+                result[
+                    "cover_url"
+                ] = f"https://images.igdb.com/igdb/image/upload/t_cover_big/{int(cover_id)}.jpg"
             else:
                 result["cover_url"] = None
 
@@ -96,9 +96,9 @@ async def get_recommendations(
         for rec in recommendations:
             cover_id = rec.get("cover_id")
             if cover_id and not pd.isna(cover_id):
-                rec["cover_url"] = (
-                    f"https://images.igdb.com/igdb/image/upload/t_cover_big/{int(cover_id)}.jpg"
-                )
+                rec[
+                    "cover_url"
+                ] = f"https://images.igdb.com/igdb/image/upload/t_cover_big/{int(cover_id)}.jpg"
             else:
                 rec["cover_url"] = None
 

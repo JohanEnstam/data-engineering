@@ -121,9 +121,9 @@ class IGDBETLPipeline:
 
                 # Processa player perspectives (IGDB returnerar ID:n, inte objekt)
                 perspectives = game.get("player_perspectives", [])
-                processed_game["player_perspectives"] = (
-                    perspectives  # Behåll ID:n för nu
-                )
+                processed_game[
+                    "player_perspectives"
+                ] = perspectives  # Behåll ID:n för nu
 
                 # Processa cover (IGDB returnerar ID, inte objekt)
                 cover = game.get("cover")
