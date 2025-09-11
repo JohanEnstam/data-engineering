@@ -173,6 +173,12 @@ Thumbs.db
 # Airflow
 airflow.cfg
 airflow.db
+airflow.db-shm
+airflow.db-wal
+airflow-scheduler.err
+airflow-scheduler.out
+airflow.cfg.bak
+simple_auth_manager_passwords.json.generated
 logs/
 plugins/
 standalone_admin_password.txt

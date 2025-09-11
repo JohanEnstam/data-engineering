@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: stg_games
+    description: "Staging model for games data with data quality checks"
+    columns:
+      - name: id
+        description: "Unique game identifier"
+        tests:
+          - unique
+          - not_null
+      - name: name
+        description: "Game title"
+        tests:
+          - not_null
+      - name: rating
+        description: "Game rating (0-100)"
+      - name: rating_category
+        description: "Categorical rating (Excellent, Good, Average, etc.)"
+      - name: era_category
+        description: "Era category (Recent, Modern, Classic, Retro)"
+      - name: data_quality_status
+        description: "Data quality assessment"
+
+  - name: game_recommendations
+    description: "Optimized table for ML recommendations"
+    columns:
+      - name: id
+        description: "Unique game identifier"
+        tests:
+          - unique
+          - not_null
+      - name: name
+        description: "Game title"
+        tests:
+          - not_null
+      - name: rating_imputed
+        description: "Rating with null values imputed to 0"
+      - name: release_year_imputed
+        description: "Release year with null values imputed to 2020"
+      - name: genre_vector
+        description: "Comma-separated genre features for ML"
+      - name: processed_at
+        description: "Timestamp when data was processed"

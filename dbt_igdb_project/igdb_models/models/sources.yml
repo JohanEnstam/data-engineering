@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw IGDB game data from BigQuery"
+    schema: igdb_games
+    tables:
+      - name: games_raw
+        description: "Raw games data with all features"
+        columns:
+          - name: id
+            description: "Unique game identifier"
+            tests:
+              - unique
+              - not_null
+          - name: name
+            description: "Game title"
+            tests:
+              - not_null
+          - name: rating
+            description: "Game rating (0-100)"
+          - name: release_year
+            description: "Year the game was released"
+          - name: genres
+            description: "List of genre IDs"
+          - name: platforms
+            description: "List of platform IDs"
+          - name: themes
+            description: "List of theme IDs"

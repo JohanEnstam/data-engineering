@@ -93,10 +93,21 @@ npm install
 npm run dev
 ```
 
-### **Steg 6: Öppna systemet**
+### **Steg 6: Starta Airflow Data Pipeline (Valfritt)**
+```bash
+# Starta Airflow för automatiserad data pipeline
+./airflow/start_airflow.sh
+
+# Öppna Airflow Web UI
+# http://localhost:8080
+# Login: admin / [genererat lösenord]
+```
+
+### **Steg 7: Öppna systemet**
 - **Frontend:** http://localhost:3000
 - **Backend API:** http://localhost:8000
 - **API Docs:** http://localhost:8000/docs
+- **Airflow UI:** http://localhost:8080 (om Airflow körs)
 
 ### 🔍 **Verifiera att allt fungerar:**
 ```bash
@@ -206,7 +217,9 @@ curl http://localhost:8000/api/lookups          # Genre/theme/platform mappings
 ### 📦 **Dependencies**
 **Core:** pandas, numpy, scikit-learn, fastapi, uvicorn
 **IGDB:** requests, python-dotenv
-**GCP:** google-cloud-billing, google-cloud-monitoring
+**GCP:** google-cloud-billing, google-cloud-monitoring, google-cloud-storage, google-cloud-bigquery
+**Airflow:** apache-airflow, apache-airflow-providers-google
+**dbt:** dbt-core, dbt-bigquery
 **Database:** sqlalchemy, psycopg2-binary
 
 **Om du får dependency-konflikter:**
@@ -231,6 +244,12 @@ data-engineering/
 ├── frontend/                  # Next.js app
 │   ├── src/app/               # Pages
 │   └── src/components/        # React components
+├── airflow/                   # Apache Airflow orchestration
+│   ├── dags/                  # Data pipeline DAGs
+│   ├── logs/                  # Airflow logs
+│   └── start_airflow.sh       # Startup script
+├── dbt_igdb_project/          # dbt data transformations
+│   └── igdb_models/           # dbt models
 ├── data/                      # Data storage (lokal)
 │   ├── raw/                   # Rådata från IGDB
 │   ├── processed/             # Bearbetad data
