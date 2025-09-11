@@ -40,15 +40,17 @@ jobs:
         # Installera linting tools
         pip install flake8 black isort
         
-        # Kör linting
+        # Kör linting (non-blocking)
         echo "Running flake8..."
-        flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics || echo "Flake8 issues found"
+        flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics || echo "⚠️ Flake8 issues found (non-blocking)"
         
         echo "Running black check..."
-        black --check src/ || echo "Black formatting issues found"
+        black --check src/ || echo "⚠️ Black formatting issues found (non-blocking)"
         
         echo "Running isort check..."
-        isort --check-only src/ || echo "Import sorting issues found"
+        isort --check-only src/ || echo "⚠️ Import sorting issues found (non-blocking)"
+        
+        echo "✅ Python code quality checks completed (warnings are non-blocking)"
         
     - name: Run TypeScript/ESLint checks
       run: |

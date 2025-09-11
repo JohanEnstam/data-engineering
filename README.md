@@ -1,5 +1,7 @@
 # 🎮 IGDB Spelrekommendationssystem
 
+[![CI/CD Pipeline](https://github.com/JohanEnstam/data-engineering/actions/workflows/simple-ci.yml/badge.svg)](https://github.com/JohanEnstam/data-engineering/actions/workflows/simple-ci.yml)
+
 Ett komplett spelrekommendationssystem med Google-liknande sökinterface, ML-baserade rekommendationer och real-time dashboard.
 
 ## 🎯 Vad systemet gör
