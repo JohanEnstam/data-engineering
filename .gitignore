@@ -134,6 +134,10 @@ dmypy.json
 *.sqlite
 *.db
 
+# Allow frontend package files
+!frontend/package.json
+!frontend/package-lock.json
+
 # Logs
 logs/
 *.log

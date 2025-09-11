@@ -236,7 +236,7 @@ check_data_files() {
         # Check for large data files
         if [[ "$file" =~ \.(csv|json|pkl)$ ]]; then
             # Skip if it's a small config file
-            if [[ "$file" =~ (package\.json|tsconfig\.json|tailwind\.config\.js) ]]; then
+            if [[ "$file" =~ (package\.json|package-lock\.json|tsconfig\.json|tailwind\.config\.js) ]]; then
                 continue
             fi
             
