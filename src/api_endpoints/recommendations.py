@@ -10,6 +10,10 @@ from pathlib import Path
 import sys
 import pandas as pd
 
+# Setup logging first
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Add src to path
 sys.path.append(str(Path(__file__).parent.parent))
 
@@ -18,10 +22,6 @@ try:
 except ImportError as e:
     logger.error(f"Failed to import GameRecommender: {e}")
     GameRecommender = None
-
-# Setup logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # Create router
 router = APIRouter(prefix="/api/recommendations", tags=["recommendations"])
