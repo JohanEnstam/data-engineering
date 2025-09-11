@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Gamepad2, Calendar, Star, Tag, Palette, Monitor } from "lucide-react";
-import { Game, DataQualityReport } from "@/types/game";
+import { Game, DataQualityReport } from "../types/game";
 
 interface LookupTables {
   genres: Record<string, string>;

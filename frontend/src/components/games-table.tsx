@@ -8,13 +8,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+} from "../components/ui/table";
+import { Input } from "../components/ui/input";
+import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Search, Filter, Gamepad2, Calendar, Star } from "lucide-react";
-import { Game } from "@/types/game";
+import { Game } from "../types/game";
 
 interface LookupTables {
   genres: Record<string, string>;

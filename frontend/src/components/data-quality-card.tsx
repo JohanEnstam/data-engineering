@@ -1,10 +1,10 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { Progress } from "../components/ui/progress";
 import { AlertCircle, CheckCircle, Database, BarChart3 } from "lucide-react";
-import { DataQualityReport } from "@/types/game";
+import { DataQualityReport } from "../types/game";
 
 interface DataQualityCardProps {
   dataQuality: DataQualityReport | null;
