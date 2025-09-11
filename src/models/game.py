@@ -1,5 +1,7 @@
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel
+
 
 class Game(BaseModel):
     id: int
@@ -24,25 +26,30 @@ class Game(BaseModel):
     screenshot_count: int = 0
     website_ids: List[int] = []
 
+
 class Genre(BaseModel):
     id: int
     name: str
     slug: str
+
 
 class Theme(BaseModel):
     id: int
     name: str
     slug: str
 
+
 class Platform(BaseModel):
     id: int
     name: str
     slug: str
 
+
 class GameRecommendation(BaseModel):
     game: Game
     similarity_score: float
     reasons: List[str]
+
 
 class DataQualityReport(BaseModel):
     total_games: int
@@ -50,6 +57,7 @@ class DataQualityReport(BaseModel):
     issues: List[str]
     statistics: Dict[str, Any]
     feature_statistics: Dict[str, Any]
+
 
 class BudgetInfo(BaseModel):
     total_credits: int

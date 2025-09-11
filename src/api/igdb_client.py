@@ -1,15 +1,16 @@
-import os
-import logging
-from dotenv import load_dotenv
-import requests
 import json
-from typing import Optional, List
+import logging
+import os
+from typing import List, Optional
+
+import requests
+from dotenv import load_dotenv
 
 
 class APIData:
     def __init__(self) -> None:
         """
-        Creates an instance of APIData to handle authentication and data fetching 
+        Creates an instance of APIData to handle authentication and data fetching
         from the IGDB API.
 
         Attributes:
@@ -20,18 +21,21 @@ class APIData:
         self.TOKEN_URL = "https://id.twitch.tv/oauth2/token"
         self.api_url = ""
         self.data = {}
+
     def __repr__(self):
         return f"APIData(data={self.data})"
+
     def __str__(self):
         return json.dumps(self.data, indent=4)
+
     def authenticate(self, client_id: str, client_secret: str) -> Optional[dict]:
         """
-        Tries to authenticate with the IGDB API using the provided client ID 
+        Tries to authenticate with the IGDB API using the provided client ID
         and client secret.
 
         Args:
             client_id (str): The client ID from Twitch Developer for the IGDB API.
-            client_secret (str): The client secret from Twitch Developer for the 
+            client_secret (str): The client secret from Twitch Developer for the
                 IGDB API.
 
         Returns:
@@ -44,8 +48,8 @@ class APIData:
                 params={
                     "client_id": client_id,
                     "client_secret": client_secret,
-                    "grant_type": "client_credentials"
-                }
+                    "grant_type": "client_credentials",
+                },
             )
 
             auth_data = response.json()
@@ -53,12 +57,18 @@ class APIData:
         except Exception as e:
             logging.error(f"An error occurd when trying to authenticate: {e}")
             return None
-    def api_fetch(self, url: str, client_id: str, access_token: str, 
-                  data_fields: Optional[List[str]] = None, 
-                  data_limit: Optional[int] = None) -> None:
+
+    def api_fetch(
+        self,
+        url: str,
+        client_id: str,
+        access_token: str,
+        data_fields: Optional[List[str]] = None,
+        data_limit: Optional[int] = None,
+    ) -> None:
         """
         Fetches data from the IGDB API using the provided URL,
-        client ID, access_token, and optional data fields and limit.  
+        client ID, access_token, and optional data fields and limit.
         Stores the fetched data in the instance variable `data`.
 
         Args:
@@ -72,39 +82,48 @@ class APIData:
         """
         try:
             # Construct the data query with proper IGDB API syntax
-            data_query = f"fields {','.join(data_fields)};" if data_fields \
-                else "fields id;"
+            data_query = (
+                f"fields {','.join(data_fields)};" if data_fields else "fields id;"
+            )
             data_query += f" limit {data_limit};" if data_limit else " limit 10;"
-            
+
             # Add a basic filter to get more games
             if "games" in url:
                 data_query += " where rating > 0;"
-            
+
             logging.info(f"IGDB Query: {data_query}")
-            
+
             # Make the API request
             response = requests.post(
-                url=url, 
-                headers={"Client-ID": client_id, 
-                        "Authorization": f"Bearer {access_token}"}, 
-                data=data_query)
-            
+                url=url,
+                headers={
+                    "Client-ID": client_id,
+                    "Authorization": f"Bearer {access_token}",
+                },
+                data=data_query,
+            )
+
             self.api_url = url
             self.data = response.json()
-            
+
             logging.info(f"IGDB Response status: {response.status_code}")
             logging.info(f"IGDB Response data length: {len(self.data)}")
-            
+
         except Exception as e:
             logging.error(f"An error occurd when trying to fetch data: {e}")
 
-    def api_fetch_with_where(self, url: str, client_id: str, access_token: str, 
-                            data_fields: Optional[List[str]] = None, 
-                            data_limit: Optional[int] = None,
-                            data_where: Optional[str] = None) -> None:
+    def api_fetch_with_where(
+        self,
+        url: str,
+        client_id: str,
+        access_token: str,
+        data_fields: Optional[List[str]] = None,
+        data_limit: Optional[int] = None,
+        data_where: Optional[str] = None,
+    ) -> None:
         """
         Fetches data from the IGDB API with WHERE clause support
-        
+
         Args:
             url (str): The IGDB API endpoint URL
             client_id (str): The client ID from Twitch Developer
@@ -115,37 +134,41 @@ class APIData:
         """
         try:
             # Construct the data query with proper IGDB API syntax
-            data_query = f"fields {','.join(data_fields)};" if data_fields \
-                else "fields id;"
+            data_query = (
+                f"fields {','.join(data_fields)};" if data_fields else "fields id;"
+            )
             data_query += f" limit {data_limit};" if data_limit else " limit 10;"
-            
+
             # Add WHERE clause if provided
             if data_where:
                 data_query += f" where {data_where};"
-            
+
             logging.info(f"IGDB Query: {data_query}")
-            
+
             # Make the API request
             response = requests.post(
-                url=url, 
-                headers={"Client-ID": client_id, 
-                        "Authorization": f"Bearer {access_token}"}, 
-                data=data_query)
-            
+                url=url,
+                headers={
+                    "Client-ID": client_id,
+                    "Authorization": f"Bearer {access_token}",
+                },
+                data=data_query,
+            )
+
             self.api_url = url
             self.data = response.json()
-            
+
             logging.info(f"IGDB Response status: {response.status_code}")
             logging.info(f"IGDB Response data length: {len(self.data)}")
-            
+
         except Exception as e:
             logging.error(f"An error occurred when trying to fetch data: {e}")
 
 
 def main() -> int:
     logging.basicConfig(
-        level=logging.INFO, 
-        format="%(asctime)s %(levelname)s [%(name)s] %(message)s")
+        level=logging.INFO, format="%(asctime)s %(levelname)s [%(name)s] %(message)s"
+    )
 
     logger = logging.getLogger(__name__)
     logger.info("Hello from %s", __name__)
@@ -160,16 +183,21 @@ def main() -> int:
         logger.info("Authentication successful")
         logger.info(f"Auth response: {auth}")
 
-        # Fetch data from the IGDB API. 
+        # Fetch data from the IGDB API.
         # Change url, data_fields, and data_limit as needed.
-        my_data.api_fetch("https://api.igdb.com/v4/games", 
-                          client_id, auth["access_token"], 
-                          ["name", "rating", "release_dates"], 5)
+        my_data.api_fetch(
+            "https://api.igdb.com/v4/games",
+            client_id,
+            auth["access_token"],
+            ["name", "rating", "release_dates"],
+            5,
+        )
         if my_data.data:
             logger.info("Data fetch successful")
             print(my_data)
 
     return 0
+
 
 if __name__ == "__main__":
     exit_code = main()

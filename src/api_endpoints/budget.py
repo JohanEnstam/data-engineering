@@ -3,19 +3,22 @@ Budget Monitoring API Endpoints
 Provides REST API endpoints for budget tracking and cost monitoring.
 """
 
-import os
 import logging
+import os
 from datetime import datetime
 from typing import Dict, List, Optional
-from fastapi import APIRouter, HTTPException, Depends
+
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from gcp.budget_monitor import GCPBudgetMonitor, BudgetInfo, CostAlert, create_budget_monitor
+from gcp.budget_monitor import (BudgetInfo, CostAlert, GCPBudgetMonitor,
+                                create_budget_monitor)
 
 logger = logging.getLogger(__name__)
 
 # Create router
 router = APIRouter(prefix="/api/budget", tags=["budget"])
+
 
 # Pydantic models for API responses
 class BudgetInfoResponse(BaseModel):
@@ -32,6 +35,7 @@ class BudgetInfoResponse(BaseModel):
     is_approaching_limit: bool
     last_updated: str
 
+
 class CostAlertResponse(BaseModel):
     alert_type: str
     message: str
@@ -40,12 +44,14 @@ class CostAlertResponse(BaseModel):
     threshold: float
     timestamp: str
 
+
 class ResourceUsageResponse(BaseModel):
     compute_instances: int
     storage_gb: float
     api_requests: int
     data_processed_gb: float
     last_updated: str
+
 
 class BudgetSummaryResponse(BaseModel):
     budget_info: BudgetInfoResponse
@@ -62,21 +68,20 @@ def get_budget_monitor() -> GCPBudgetMonitor:
 
 @router.get("/info", response_model=BudgetInfoResponse)
 async def get_budget_info(
-    budget_limit: float = 100.0,
-    monitor: GCPBudgetMonitor = Depends(get_budget_monitor)
+    budget_limit: float = 100.0, monitor: GCPBudgetMonitor = Depends(get_budget_monitor)
 ):
     """
     Get current budget information for the project.
-    
+
     Args:
         budget_limit: Monthly budget limit in USD (default: 100.0)
-    
+
     Returns:
         BudgetInfoResponse: Current budget status and utilization
     """
     try:
         budget_info = monitor.get_budget_info(monthly_budget_limit=budget_limit)
-        
+
         return BudgetInfoResponse(
             project_id=budget_info.project_id,
             project_name=budget_info.project_name,
@@ -89,32 +94,33 @@ async def get_budget_info(
             projected_monthly_cost=budget_info.projected_monthly_cost,
             is_over_budget=budget_info.is_over_budget,
             is_approaching_limit=budget_info.is_approaching_limit,
-            last_updated=datetime.now().isoformat()
+            last_updated=datetime.now().isoformat(),
         )
-        
+
     except Exception as e:
         logger.error(f"Error getting budget info: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to get budget info: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to get budget info: {str(e)}"
+        )
 
 
 @router.get("/alerts", response_model=List[CostAlertResponse])
 async def get_cost_alerts(
-    budget_limit: float = 100.0,
-    monitor: GCPBudgetMonitor = Depends(get_budget_monitor)
+    budget_limit: float = 100.0, monitor: GCPBudgetMonitor = Depends(get_budget_monitor)
 ):
     """
     Get current cost alerts for the project.
-    
+
     Args:
         budget_limit: Monthly budget limit in USD (default: 100.0)
-    
+
     Returns:
         List[CostAlertResponse]: Current cost alerts
     """
     try:
         budget_info = monitor.get_budget_info(monthly_budget_limit=budget_limit)
         alerts = monitor.check_cost_alerts(budget_info)
-        
+
         return [
             CostAlertResponse(
                 alert_type=alert.alert_type,
@@ -122,66 +128,67 @@ async def get_cost_alerts(
                 severity=alert.severity,
                 current_cost=alert.current_cost,
                 threshold=alert.threshold,
-                timestamp=alert.timestamp.isoformat()
+                timestamp=alert.timestamp.isoformat(),
             )
             for alert in alerts
         ]
-        
+
     except Exception as e:
         logger.error(f"Error getting cost alerts: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to get cost alerts: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to get cost alerts: {str(e)}"
+        )
 
 
 @router.get("/resources", response_model=ResourceUsageResponse)
-async def get_resource_usage(
-    monitor: GCPBudgetMonitor = Depends(get_budget_monitor)
-):
+async def get_resource_usage(monitor: GCPBudgetMonitor = Depends(get_budget_monitor)):
     """
     Get current resource usage summary.
-    
+
     Returns:
         ResourceUsageResponse: Current resource usage metrics
     """
     try:
         usage = monitor.get_resource_usage_summary()
-        
+
         return ResourceUsageResponse(
             compute_instances=usage.get("compute_instances", 0),
             storage_gb=usage.get("storage_gb", 0.0),
             api_requests=usage.get("api_requests", 0),
             data_processed_gb=usage.get("data_processed_gb", 0.0),
-            last_updated=usage.get("last_updated", datetime.now().isoformat())
+            last_updated=usage.get("last_updated", datetime.now().isoformat()),
         )
-        
+
     except Exception as e:
         logger.error(f"Error getting resource usage: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to get resource usage: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to get resource usage: {str(e)}"
+        )
 
 
 @router.get("/summary", response_model=BudgetSummaryResponse)
 async def get_budget_summary(
-    budget_limit: float = 100.0,
-    monitor: GCPBudgetMonitor = Depends(get_budget_monitor)
+    budget_limit: float = 100.0, monitor: GCPBudgetMonitor = Depends(get_budget_monitor)
 ):
     """
     Get comprehensive budget summary including info, alerts, and resource usage.
-    
+
     Args:
         budget_limit: Monthly budget limit in USD (default: 100.0)
-    
+
     Returns:
         BudgetSummaryResponse: Complete budget overview
     """
     try:
         # Get budget info
         budget_info = monitor.get_budget_info(monthly_budget_limit=budget_limit)
-        
+
         # Get alerts
         alerts = monitor.check_cost_alerts(budget_info)
-        
+
         # Get resource usage
         usage = monitor.get_resource_usage_summary()
-        
+
         # Determine overall status
         if budget_info.is_over_budget:
             status = "critical"
@@ -189,7 +196,7 @@ async def get_budget_summary(
             status = "warning"
         else:
             status = "healthy"
-        
+
         return BudgetSummaryResponse(
             budget_info=BudgetInfoResponse(
                 project_id=budget_info.project_id,
@@ -203,7 +210,7 @@ async def get_budget_summary(
                 projected_monthly_cost=budget_info.projected_monthly_cost,
                 is_over_budget=budget_info.is_over_budget,
                 is_approaching_limit=budget_info.is_approaching_limit,
-                last_updated=datetime.now().isoformat()
+                last_updated=datetime.now().isoformat(),
             ),
             alerts=[
                 CostAlertResponse(
@@ -212,7 +219,7 @@ async def get_budget_summary(
                     severity=alert.severity,
                     current_cost=alert.current_cost,
                     threshold=alert.threshold,
-                    timestamp=alert.timestamp.isoformat()
+                    timestamp=alert.timestamp.isoformat(),
                 )
                 for alert in alerts
             ],
@@ -221,61 +228,62 @@ async def get_budget_summary(
                 storage_gb=usage.get("storage_gb", 0.0),
                 api_requests=usage.get("api_requests", 0),
                 data_processed_gb=usage.get("data_processed_gb", 0.0),
-                last_updated=usage.get("last_updated", datetime.now().isoformat())
+                last_updated=usage.get("last_updated", datetime.now().isoformat()),
             ),
-            status=status
+            status=status,
         )
-        
+
     except Exception as e:
         logger.error(f"Error getting budget summary: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to get budget summary: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to get budget summary: {str(e)}"
+        )
 
 
 @router.post("/alerts/create")
 async def create_budget_alert_policy(
     budget_limit: float,
     alert_threshold: float = 80.0,
-    monitor: GCPBudgetMonitor = Depends(get_budget_monitor)
+    monitor: GCPBudgetMonitor = Depends(get_budget_monitor),
 ):
     """
     Create a budget alert policy.
-    
+
     Args:
         budget_limit: Monthly budget limit in USD
         alert_threshold: Alert threshold percentage (default: 80.0)
-    
+
     Returns:
         Dict: Success status and message
     """
     try:
         success = monitor.create_budget_alert_policy(budget_limit, alert_threshold)
-        
+
         if success:
             return {
                 "success": True,
-                "message": f"Budget alert policy created for ${budget_limit} with {alert_threshold}% threshold"
+                "message": f"Budget alert policy created for ${budget_limit} with {alert_threshold}% threshold",
             }
         else:
-            return {
-                "success": False,
-                "message": "Failed to create budget alert policy"
-            }
-            
+            return {"success": False, "message": "Failed to create budget alert policy"}
+
     except Exception as e:
         logger.error(f"Error creating budget alert policy: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to create budget alert policy: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to create budget alert policy: {str(e)}"
+        )
 
 
 @router.get("/health")
 async def budget_health_check():
     """
     Health check endpoint for budget monitoring service.
-    
+
     Returns:
         Dict: Health status
     """
     return {
         "status": "healthy",
         "service": "budget-monitoring",
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
     }
