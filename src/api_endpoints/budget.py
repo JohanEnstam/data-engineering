@@ -11,12 +11,8 @@ from typing import Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from gcp.budget_monitor import (
-    BudgetInfo,
-    CostAlert,
-    GCPBudgetMonitor,
-    create_budget_monitor,
-)
+from gcp.budget_monitor import (BudgetInfo, CostAlert, GCPBudgetMonitor,
+                                create_budget_monitor)
 
 logger = logging.getLogger(__name__)
 
