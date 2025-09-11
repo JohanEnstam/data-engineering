@@ -66,9 +66,9 @@ jobs:
         docker build -f Dockerfile -t igdb-backend-test .
         echo "Backend Docker build successful"
         
-        # Test frontend build (temporarily disabled due to TypeScript path mapping issues)
-        echo "Frontend Docker build temporarily disabled - TypeScript path mapping needs fixing"
-        # docker build -f frontend/Dockerfile -t igdb-frontend-test ./frontend
+        # Test frontend build
+        docker build -f frontend/Dockerfile -t igdb-frontend-test ./frontend
+        echo "Frontend Docker build successful"
         
     - name: Run basic tests
       run: |

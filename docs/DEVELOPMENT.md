@@ -1,4 +1,4 @@
-# IGDB Spelrekommendationssystem - Projektöversikt
+# IGDB Spelrekommendationssystem - Utvecklingsguide
 
 ## 🎯 **Projektmål**
 
@@ -81,14 +81,7 @@ IGDB API → Cloud Storage → BigQuery → ML Processing → FastAPI → Next.j
 - Release year (numerical)
 - Rating scores (numerical)
 - Text features (TF-IDF på summaries)
-- Visual features (cover/screenshot analysis) // Känns överdrivet och beräknings-intensivt...
 ```
-
-### **Modellträning**
-- **Lokal utveckling:** sklearn, pandas för prototyping
-- **Cloud training:** Vertex AI för stora modeller
-- **Evaluation:** Cross-validation, A/B testing
-- **Deployment:** Cloud Run för real-time predictions
 
 ---
 
@@ -119,55 +112,9 @@ POST /api/recommendations/batch  # För flera spel samtidigt
 
 ---
 
-## 🏗️ **Projektstruktur**
+## 🚀 **Utvecklingsfaser**
 
-### **Git Branch Strategy (Git Flow)**
-```
-main (production)
-├── develop (integration)
-│   ├── feature/igdb-api-integration
-│   ├── feature/frontend-components
-│   ├── feature/ml-recommendations
-│   ├── feature/cloud-deployment
-│   └── feature/data-pipeline
-└── hotfix/ (om nödvändigt)
-```
-
-### **Mappstruktur**
-```
-igdb-game-recommender/
-├── src/                       # Huvudkod
-│   ├── api/                   # IGDB API client
-│   ├── data_collectors/       # Data collection scripts
-│   ├── data_processing/       # ETL och transformation
-│   ├── models/                # ML modeller och algoritmer
-│   ├── api_endpoints/         # FastAPI endpoints
-│   └── utils/                 # Hjälpfunktioner
-├── frontend/                  # Next.js app
-│   ├── src/app/               # App Router pages
-│   ├── src/components/        # React komponenter
-│   ├── src/lib/               # Utilities
-│   └── src/hooks/             # Custom hooks
-├── data/                      # Data storage
-│   ├── raw/                   # Raw IGDB data
-│   ├── processed/             # Cleaned data
-│   └── models/                # Trained ML models
-├── tests/                     # Unit och integration tests
-├── docs/                      # Dokumentation
-├── config/                    # Konfigurationsfiler
-├── scripts/                   # Deployment scripts
-├── requirements.txt           # Python dependencies
-├── package.json               # Node.js dependencies
-├── Dockerfile                 # Container setup
-├── docker-compose.yml         # Local development
-└── README.md                  # Projekt dokumentation
-```
-
----
-
-## 🚀 **Utvecklingsfaser - Uppdaterad Strategi**
-
-### **Fas 1: Frontend-First Prototyping (Vecka 1)** ⭐ **KLAR** ✅
+### **Fas 1: Frontend-First Prototyping** ⭐ **KLAR** ✅
 **Mål:** Visuell feedback och iterativ utveckling
 
 **Uppgifter:**
@@ -181,14 +128,7 @@ igdb-game-recommender/
 - [x] **Basic API endpoints** för data access
 - [x] **GCP Integration** - budget monitoring med verklig data
 
-**Deliverables:**
-- [x] Fungerande lokalt rekommendationssystem
-- [x] **Interaktiv web interface** för data exploration
-- [x] **Budget monitoring** system med GCP integration
-- [x] API endpoints för spel-sökning och budget tracking
-- [x] **Visual feedback** för budget monitoring och data exploration
-
-### **Fas 2: Local-First ML Development (Vecka 2)** ⭐ **KLAR** ✅
+### **Fas 2: Local-First ML Development** ⭐ **KLAR** ✅
 **Mål:** Bygga robust rekommendationsmotor lokalt innan cloud scaling
 
 **Strategi:** "Progressive Local-First" - utveckla och testa allt lokalt först
@@ -203,19 +143,7 @@ igdb-game-recommender/
 - [x] **Performance optimization** för lokala constraints
 - [x] **Data quality validation** med visuell feedback
 
-**Deliverables:**
-- [x] **Fungerande rekommendationsmotor** med visuell interface
-- [x] **Model evaluation** framework
-- [x] **Optimized local training** pipeline
-- [x] **User feedback** system för model improvement
-
-**Varför lokalt först:**
-- ✅ **Snabb iteration** - testa idéer på minuter, inte timmar
-- ✅ **$0 kostnad** - ingen GCP-kostnad under utveckling
-- ✅ **Enklare debugging** - allt på din MacBook
-- ✅ **Lär dig systemet** innan du skalar upp
-
-### **Fas 3: Docker & CI/CD Integration (Vecka 3)** ⭐ **PÅGÅR** 🔄
+### **Fas 3: Docker & CI/CD Integration** ⭐ **PÅGÅR** 🔄
 **Mål:** Containerisering och CI/CD-pipeline för skalning till molnet
 
 **När du ska flytta till molnet:**
@@ -236,7 +164,8 @@ igdb-game-recommender/
 - [x] **Python Code Quality** - Black, flake8, isort automation
 - [x] **Pre-commit Hooks** - Lokal kodkvalitet före commit
 - [x] **Status Badges** - Real-time CI/CD status i README
-- [ ] **Frontend Component Fixes** - Saknade komponenter blockerar Docker build
+- [x] **Frontend Component Fixes** - TypeScript path mapping fixade, Docker build fungerar
+- [ ] **CI/CD Pipeline Black Issue** - Enda återstående problem: Black formatering i full CI/CD pipeline
 - [ ] **Larger data collection** (10,000+ spel)
 - [ ] **Cloud model training** med Vertex AI
 - [ ] **Cost optimization** baserat på budget constraints
@@ -244,20 +173,7 @@ igdb-game-recommender/
 - [ ] **Automated data pipeline** med Airflow
 - [ ] **Performance monitoring** med budget alerts
 
-**Deliverables:**
-- **Docker containerization** - Komplett setup med alla services ✅
-- **Clean codebase** - TypeScript/ESLint-fel fixade ✅
-- **GitHub Actions CI/CD** - Komplett CI/CD pipeline ✅
-- **GitHub CLI Integration** - Direkt workflow-övervakning ✅
-- **Python Code Quality** - Automatiserad kodkvalitet ✅
-- **Pre-commit Hooks** - Lokal kodkvalitet ✅
-- **Status Badges** - Real-time CI/CD status ✅
-- **Skalbar data pipeline** i molnet
-- **Budget-aware** system med cost monitoring
-- **Production-ready** API och frontend
-- **Automated** data collection och model training
-
-### **Fas 4: Advanced ML & Production (Vecka 4)**
+### **Fas 4: Advanced ML & Production**
 **Mål:** Production-ready system med avancerade funktioner
 
 **Uppgifter:**
@@ -268,12 +184,6 @@ igdb-game-recommender/
 - [ ] **Performance monitoring** med budget tracking
 - [ ] **CI/CD pipeline** med automated testing
 - [ ] **Documentation** och presentation för kursen
-
-**Deliverables:**
-- **Production-ready** rekommendationssystem
-- **Advanced ML** funktioner med visuell feedback
-- **Complete documentation** för kursen
-- **Budget-optimized** cloud deployment
 
 ---
 
@@ -300,74 +210,15 @@ igdb-game-recommender/
 
 ---
 
-## 🔧 **Utvecklingsmiljö**
-
-### **Lokal Utveckling**
-```bash
-# Python environment
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-
-# Node.js environment (Frontend-First Development)
-cd frontend
-npm install
-npm run dev
-
-# Data collection och ML
-python collect_data.py --games-limit 1000
-python -m src.models.train_recommender
-
-# Docker (Rekommenderat för team collaboration)
-docker-compose up --build
-# Eller individuella services:
-docker-compose up frontend  # http://localhost:3000
-docker-compose up api       # http://localhost:8000
-docker-compose up postgres  # http://localhost:5432
-```
-
-### **Cloud Environment**
-- **GCP Project:** IGDB-ML-Pipeline (exalted-tempo-471613-e2)
-- **Budget:** AI24S-Data-Engineering-IGDB (kr100.00/månad)
-- **Budget Alerts:** 50%, 90%, 100%, 110% av budget
-- **BigQuery Dataset:** game_data
-- **Cloud Storage:** igdb-raw-data
-- **Cloud Run:** API och Frontend
-- **Vertex AI:** ML model training
-- **Airflow:** Data pipeline orchestration
-- **Budget Monitoring:** Real-time cost tracking
-
----
-
-## 📚 **Dokumentation**
-
-### **Teknisk Dokumentation**
-- [ ] API Documentation (OpenAPI/Swagger)
-- [ ] Database Schema Documentation
-- [ ] ML Model Documentation
-- [ ] Deployment Guide
-- [ ] Troubleshooting Guide
-
-### **Användardokumentation**
-- [ ] User Guide
-- [ ] FAQ
-- [ ] Video Tutorials
-- [ ] Best Practices
-
----
-
 ## 🎯 **Nästa Steg**
 
 ### **Omedelbara åtgärder:**
-1. **Frontend setup** med Next.js + shadcn/ui
-2. **Data visualization** - visa testdata i tables/charts
-3. **Budget tracking** dashboard för GCP credits
-4. **Basic API endpoints** för data access
-5. **Core ML development** med visuell feedback
+1. **Lösa CI/CD Pipeline Black Issue** - Enda återstående problem
+2. **Larger data collection** (10,000+ spel)
+3. **Cloud model training** med Vertex AI
+4. **Cost optimization** baserat på budget constraints
 
 ### **Kommande veckor:**
-- **Vecka 1:** Frontend-first prototyping med data visualization ✅
-- **Vecka 2:** Core ML development med visuell feedback ✅
 - **Vecka 3:** Docker & CI/CD integration med budget monitoring 🔄
 - **Vecka 4:** Advanced ML och production deployment
 
@@ -375,9 +226,9 @@ docker-compose up postgres  # http://localhost:5432
 
 ## 📝 **Projektstatus**
 
-**Senast uppdaterad:** 2025-09-11
+**Senast uppdaterad:** 2025-01-11
 **Nuvarande fas:** Docker & CI/CD Integration (🔄 Pågår) + Local-First ML Development (✅ Klar) + Frontend Integration (✅ Klar) + Data Quality Dashboard (✅ Klar) + GitHub Actions CI/CD (✅ Klar)
-**Nästa milestone:** Frontend Component Fixes för Docker Build
+**Nästa milestone:** Lösa Black formatering i CI/CD Pipeline (enda återstående problem)
 **Gruppmedlemmar:** Viktoria, Isak & Johan
 **Teknisk stack:** Python, Next.js, shadcn/ui, Docker, GCP, IGDB API
 **Budget:** AI24S-Data-Engineering-IGDB (kr100.00/månad) + $300 GCP credits

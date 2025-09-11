@@ -1,18 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { Badge } from "../components/ui/badge";
-import { Progress } from "../components/ui/progress";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { AlertCircle, Gamepad2, TrendingUp, DollarSign, Database } from "lucide-react";
-import { Game, DataQualityReport, BudgetInfo } from "../types/game";
-import { GamesTable } from "../components/games-table";
-import { DataQualityCard } from "../components/data-quality-card";
-import { BudgetCard } from "../components/budget-card";
-import { BudgetDashboard } from "../components/budget-dashboard";
-import { CollectionStats } from "../components/collection-stats";
-import { mockGames, mockDataQuality, mockBudgetInfo } from "../lib/mock-data";
+import { Game, DataQualityReport, BudgetInfo } from "@/types/game";
+import { GamesTable } from "@/components/games-table";
+import { DataQualityCard } from "@/components/data-quality-card";
+import { BudgetCard } from "@/components/budget-card";
+import { BudgetDashboard } from "@/components/budget-dashboard";
+import { CollectionStats } from "@/components/collection-stats";
+import { mockGames, mockDataQuality, mockBudgetInfo } from "@/lib/mock-data";
 
 export default function Dashboard() {
   const [games, setGames] = useState<Game[]>([]);

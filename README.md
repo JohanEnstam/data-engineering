@@ -159,7 +159,7 @@ När du har följt installationsstegen ovan kommer du att se:
 ./venv/bin/python -c "from src.models.game_recommender import GameRecommender; GameRecommender().train_model()"
 
 # Starta API med specifika inställningar
-./venv/bin/python run_api.py                    # Standard API server
+./venv/bin/python scripts/start-api.py         # Standard API server
 ./venv/bin/python -m uvicorn src.api_endpoints.main:app --host 0.0.0.0 --port 8000 --reload
 
 # Kolla data quality
@@ -296,9 +296,10 @@ pip install -r requirements.txt
 
 ## 📚 Dokumentation
 
-- [Projektöversikt](PROJECT_OVERVIEW.md) - Detaljerad projektbeskrivning
-- [Nästa steg](NEXT_STEPS.md) - Utvecklingsplan
-- [Setup Guide](SETUP.md) - Detaljerad installationsguide
+- [Utvecklingsguide](docs/DEVELOPMENT.md) - Detaljerad projektbeskrivning och utvecklingsplan
+- [Setup Guide](docs/SETUP.md) - Detaljerad installationsguide
+- [Data Collection](docs/DATA_COLLECTION.md) - Data collection och ETL pipeline
+- [CI/CD Setup](docs/CI_CD.md) - GitHub Actions och CI/CD konfiguration
 
 ## 🤝 Bidrag
 

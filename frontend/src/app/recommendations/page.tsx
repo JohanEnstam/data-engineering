@@ -1,7 +1,7 @@
 "use client";
 
-import { GameSearch } from "../../components/game-search";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import { GameSearch } from "@/components/game-search";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Gamepad2, Search, Sparkles } from "lucide-react";
 
 export default function RecommendationsPage() {
