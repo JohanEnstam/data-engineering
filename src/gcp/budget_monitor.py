@@ -12,8 +12,7 @@ from typing import Dict, List, Optional, Tuple
 from google.api_core import exceptions as gcp_exceptions
 from google.cloud import billing_v1, monitoring_v3
 from google.cloud.billing_v1.types import ProjectBillingInfo
-from google.cloud.monitoring_v3.types import (Point, TimeInterval, TimeSeries,
-                                              TypedValue)
+from google.cloud.monitoring_v3.types import Point, TimeInterval, TimeSeries, TypedValue
 
 logger = logging.getLogger(__name__)
 
