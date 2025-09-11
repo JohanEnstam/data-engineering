@@ -307,5 +307,3 @@ pip install -r requirements.txt
 5. Skapa Pull Request
 
 ---
-
-**🎉 Klar! Du ska nu ha ett fungerande spelrekommendationssystem med 1000+ spel och ML-rekommendationer!**
