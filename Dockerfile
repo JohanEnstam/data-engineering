@@ -17,7 +17,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy source code
 COPY src/ ./src/
-COPY data/ ./data/
+# Create data directory (will be mounted as volume in docker-compose)
+RUN mkdir -p ./data
 
 # Create non-root user
 RUN useradd --create-home --shell /bin/bash app \

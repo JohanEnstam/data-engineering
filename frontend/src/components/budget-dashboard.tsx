@@ -489,7 +489,7 @@ export function BudgetDashboard({ className }: BudgetDashboardProps) {
                     {budget_info.budget_utilization_percent > 50 ? (
                       <p>⚠️ High spending rate detected. Consider optimizing resource usage to stay within budget.</p>
                     ) : (
-                      <p>✅ Spending rate is healthy. You're on track to stay within your monthly budget.</p>
+                      <p>✅ Spending rate is healthy. You&apos;re on track to stay within your monthly budget.</p>
                     )}
                   </div>
                 </div>

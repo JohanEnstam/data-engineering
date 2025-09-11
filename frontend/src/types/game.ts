@@ -21,7 +21,7 @@ export interface Game {
   screenshot_count: number;
   website_ids: number[];
   // ML features
-  [key: string]: any; // For dynamic genre/theme features like genre_24, theme_1, etc.
+  [key: string]: string | number | boolean | null | number[]; // For dynamic genre/theme features like genre_24, theme_1, etc.
 }
 
 export interface Genre {

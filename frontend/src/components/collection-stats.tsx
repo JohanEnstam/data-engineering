@@ -201,7 +201,7 @@ export function CollectionStats({ games, dataQuality }: CollectionStatsProps) {
                   />
                   <YAxis />
                   <Tooltip 
-                    formatter={(value: any) => [value, 'Games']}
+                    formatter={(value: number) => [value, 'Games']}
                     labelFormatter={(label) => `Genre: ${label}`}
                   />
                   <Bar dataKey="count" fill="#8884d8" />
@@ -228,7 +228,6 @@ export function CollectionStats({ games, dataQuality }: CollectionStatsProps) {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ theme, percentage }) => `${theme}: ${percentage.toFixed(1)}%`}
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="count"
@@ -237,7 +236,7 @@ export function CollectionStats({ games, dataQuality }: CollectionStatsProps) {
                       <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value: any) => [value, 'Games']} />
+                  <Tooltip formatter={(value: number) => [value, 'Games']} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -263,7 +262,7 @@ export function CollectionStats({ games, dataQuality }: CollectionStatsProps) {
                   <XAxis dataKey="year" />
                   <YAxis />
                   <Tooltip 
-                    formatter={(value: any) => [value, 'Games']}
+                    formatter={(value: number) => [value, 'Games']}
                     labelFormatter={(label) => `Year: ${label}`}
                   />
                   <Bar dataKey="count" fill="#82ca9d" />

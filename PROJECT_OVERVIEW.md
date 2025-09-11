@@ -215,17 +215,22 @@ igdb-game-recommender/
 - ✅ **Enklare debugging** - allt på din MacBook
 - ✅ **Lär dig systemet** innan du skalar upp
 
-### **Fas 3: Cloud Integration (Vecka 3)**
-**Mål:** Skalning till molnet när lokal modell fungerar bra
+### **Fas 3: Docker & CI/CD Integration (Vecka 3)** ⭐ **PÅGÅR** 🔄
+**Mål:** Containerisering och CI/CD-pipeline för skalning till molnet
 
 **När du ska flytta till molnet:**
 - ✅ Du har en **fungerande modell** lokalt
 - ✅ Du vet vilka **features som fungerar**
+- ✅ Du har **komplett Docker setup** som fungerar lokalt
 - ✅ Du vill ha **10,000+ spel** (för bättre rekommendationer)
 - ✅ Du vill **automatisera** data collection
 
 **Uppgifter:**
 - [x] **GCP budget tracking** - real-time cost monitoring
+- [x] **Docker containerization** - Frontend + Backend + PostgreSQL
+- [x] **TypeScript/ESLint fixes** - Clean builds utan fel
+- [x] **Lokal Docker-testning** - Alla services fungerar perfekt
+- [ ] **GitHub Actions CI/CD** - Automatisk build och test
 - [ ] **Larger data collection** (10,000+ spel)
 - [ ] **Cloud model training** med Vertex AI
 - [ ] **Cost optimization** baserat på budget constraints
@@ -234,6 +239,8 @@ igdb-game-recommender/
 - [ ] **Performance monitoring** med budget alerts
 
 **Deliverables:**
+- **Docker containerization** - Komplett setup med alla services
+- **Clean codebase** - TypeScript/ESLint-fel fixade
 - **Skalbar data pipeline** i molnet
 - **Budget-aware** system med cost monitoring
 - **Production-ready** API och frontend
@@ -300,8 +307,12 @@ npm run dev
 python collect_data.py --games-limit 1000
 python -m src.models.train_recommender
 
-# Docker (optional)
-docker-compose up
+# Docker (Rekommenderat för team collaboration)
+docker-compose up --build
+# Eller individuella services:
+docker-compose up frontend  # http://localhost:3000
+docker-compose up api       # http://localhost:8000
+docker-compose up postgres  # http://localhost:5432
 ```
 
 ### **Cloud Environment**
@@ -344,9 +355,9 @@ docker-compose up
 5. **Core ML development** med visuell feedback
 
 ### **Kommande veckor:**
-- **Vecka 1:** Frontend-first prototyping med data visualization
-- **Vecka 2:** Core ML development med visuell feedback
-- **Vecka 3:** Cloud integration med budget monitoring
+- **Vecka 1:** Frontend-first prototyping med data visualization ✅
+- **Vecka 2:** Core ML development med visuell feedback ✅
+- **Vecka 3:** Docker & CI/CD integration med budget monitoring 🔄
 - **Vecka 4:** Advanced ML och production deployment
 
 ---
@@ -354,14 +365,14 @@ docker-compose up
 ## 📝 **Projektstatus**
 
 **Senast uppdaterad:** 2025-09-10
-**Nuvarande fas:** Local-First ML Development (✅ Klar) + Frontend Integration (✅ Klar) + Data Quality Dashboard (✅ Klar)
-**Nästa milestone:** Visual Evaluation & Cloud Integration (Vecka 3)
+**Nuvarande fas:** Docker & CI/CD Integration (🔄 Pågår) + Local-First ML Development (✅ Klar) + Frontend Integration (✅ Klar) + Data Quality Dashboard (✅ Klar)
+**Nästa milestone:** GitHub Actions CI/CD Implementation
 **Gruppmedlemmar:** Viktoria, Isak & Johan
-**Teknisk stack:** Python, Next.js, shadcn/ui, GCP, IGDB API
+**Teknisk stack:** Python, Next.js, shadcn/ui, Docker, GCP, IGDB API
 **Budget:** AI24S-Data-Engineering-IGDB (kr100.00/månad) + $300 GCP credits
 **GCP Project:** IGDB-ML-Pipeline (exalted-tempo-471613-e2)
 **Strategi:** Progressive Local-First Development
-**Status:** Komplett fungerande system med 100 spel, ML-rekommendationer och data quality dashboard
+**Status:** Komplett fungerande system med 100 spel, ML-rekommendationer, data quality dashboard och Docker containerization
 
 ---
 
