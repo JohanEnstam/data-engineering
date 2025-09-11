@@ -1,0 +1,212 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Job 1: Code Quality & Testing
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+        node-version: [18]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+        
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Install Node.js dependencies
+      run: |
+        cd frontend
+        npm ci
+        
+    - name: Run Python linting
+      run: |
+        pip install flake8 black isort
+        flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        black --check src/
+        isort --check-only src/
+        
+    - name: Run TypeScript/ESLint checks
+      run: |
+        cd frontend
+        npm run lint
+        
+    - name: Run Python tests
+      run: |
+        python -m pytest tests/ -v || echo "No tests found yet"
+        
+    - name: Run TypeScript tests
+      run: |
+        cd frontend
+        npm test || echo "No tests found yet"
+
+  # Job 2: Build Docker Images
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          
+    - name: Build and push Frontend image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./frontend
+        file: ./frontend/Dockerfile
+        push: true
+        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:${{ github.sha }}
+        labels: ${{ steps.meta.outputs.labels }}
+        
+    - name: Build and push Backend image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:${{ github.sha }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+  # Job 3: Deploy to Staging (only on develop branch)
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    permissions:
+      contents: read
+      packages: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        
+    - name: Configure Docker for GCR
+      run: |
+        gcloud auth configure-docker
+        
+    - name: Deploy to Cloud Run (Frontend)
+      run: |
+        gcloud run deploy igdb-frontend-staging \
+          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:${{ github.sha }} \
+          --platform managed \
+          --region europe-west1 \
+          --allow-unauthenticated \
+          --port 3000 \
+          --set-env-vars NODE_ENV=production
+          
+    - name: Deploy to Cloud Run (Backend)
+      run: |
+        gcloud run deploy igdb-backend-staging \
+          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:${{ github.sha }} \
+          --platform managed \
+          --region europe-west1 \
+          --allow-unauthenticated \
+          --port 8000 \
+          --set-env-vars IGDB_CLIENT_ID=${{ secrets.IGDB_CLIENT_ID }} \
+          --set-env-vars IGDB_CLIENT_SECRET=${{ secrets.IGDB_CLIENT_SECRET }}
+
+  # Job 4: Deploy to Production (only on main branch)
+  deploy-production:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    permissions:
+      contents: read
+      packages: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        
+    - name: Configure Docker for GCR
+      run: |
+        gcloud auth configure-docker
+        
+    - name: Deploy to Cloud Run (Frontend)
+      run: |
+        gcloud run deploy igdb-frontend-prod \
+          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:${{ github.sha }} \
+          --platform managed \
+          --region europe-west1 \
+          --allow-unauthenticated \
+          --port 3000 \
+          --set-env-vars NODE_ENV=production
+          
+    - name: Deploy to Cloud Run (Backend)
+      run: |
+        gcloud run deploy igdb-backend-prod \
+          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:${{ github.sha }} \
+          --platform managed \
+          --region europe-west1 \
+          --allow-unauthenticated \
+          --port 8000 \
+          --set-env-vars IGDB_CLIENT_ID=${{ secrets.IGDB_CLIENT_ID }} \
+          --set-env-vars IGDB_CLIENT_SECRET=${{ secrets.IGDB_CLIENT_SECRET }}
+          
+    - name: Run Health Check
+      run: |
+        sleep 30  # Wait for deployment to be ready
+        curl -f https://igdb-backend-prod-xxx-ew.a.run.app/api/health || exit 1

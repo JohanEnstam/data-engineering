@@ -29,3 +29,11 @@ google-cloud-run==0.10.0
 # Utilities
 python-multipart==0.0.6
 httpx==0.25.2
+
+# Testing and code quality
+pytest==7.4.3
+pytest-cov==4.1.0
+flake8==6.1.0
+black==23.12.1
+isort==5.13.2
+pre-commit==3.6.0
