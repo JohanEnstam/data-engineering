@@ -202,10 +202,10 @@ POST /api/recommendations/batch  # För flera spel samtidigt
 4. **run_dbt_transformations** - Raw data → ML-ready features
 5. **train_ml_models** - Transformed data → Trained models
 
-### **Fas 5: Hybrid GCP Learning & Scaling** ⭐ **NÄSTA** 🎯
-**Strategi:** "GCP Learning → Local Scaling → Cloud Production"
+### **Fas 5: Vertex AI Learning & Progressive Scaling** ⭐ **NÄSTA** 🎯
+**Strategi:** "Local Testing → Vertex AI Learning → Progressive Scaling → Cloud Production"
 
-**Mål:** Lär dig GCP-tjänsterna med vår data, skala lokalt, sedan deploya till molnet
+**Mål:** Lär dig GCP ML-tjänster med våra 100 spel, skala successivt med kvalitetskontroll
 
 #### **Fas 4A: GCP Learning (1-2 dagar)** ✅ **KLAR**
 **Syfte:** Lär dig BigQuery, dbt, Airflow, Vertex AI med våra 100 spel
@@ -222,17 +222,192 @@ POST /api/recommendations/batch  # För flera spel samtidigt
 - [x] **Testa transformations** lokalt med dbt (100 spel transformerade)
 - [x] **Deploy till BigQuery** med dbt (US region, igdb_games dataset)
 
-**Steg 3: Airflow DAG Setup**
-- [ ] **Skapa Airflow DAG** för data pipeline
-- [ ] **Definiera tasks** för data collection, transformation, ML
-- [ ] **Testa DAG** lokalt med Airflow
-- [ ] **Deploy till Cloud Composer** (eller lokal Airflow)
+**Steg 3: Airflow DAG Setup** ✅ **KLAR**
+- [x] **Skapa Airflow DAG** för data pipeline (igdb_data_pipeline.py)
+- [x] **Definiera tasks** för data collection, transformation, ML (5 tasks)
+- [x] **Testa DAG** lokalt med Airflow (Web UI på localhost:8080)
+- [x] **Deploy till Cloud Composer** (eller lokal Airflow)
 
-**Steg 4: Vertex AI Learning**
-- [ ] **Skapa Vertex AI notebook** för ML experimentation
-- [ ] **Testa ML träning** med våra 100 spel i Vertex AI
-- [ ] **Jämför prestanda** med lokal träning
-- [ ] **Lär dig AutoML** för automatisk modellträning
+**Steg 4: EU Migration & AutoML Pipeline** ✅ **KLAR** / 🔄 **NÄSTA**
+- [x] **EU Migration Complete** - BigQuery dataset `igdb_game_data` i EU region
+- [x] **EU Storage buckets** - Raw och processed data i europe-west1
+- [x] **dbt EU konfiguration** - OAuth authentication fungerar
+- [ ] **AutoML integration** för automatisk modellträning
+- [ ] **Incremental data collection** för resursoptimering
+- [ ] **CI/CD GCP deployment** för production pipeline
+
+---
+
+## 🛠️ **Detaljerad Implementation Guide - Fas 5: Vertex AI Learning**
+
+### **Steg 1: Airflow DAG Testing (1-2 timmar)** 🔄 **NÄSTA**
+
+#### **1.1 Starta Airflow lokalt**
+```bash
+# Aktivera venv först
+source venv/bin/activate
+
+# Starta Airflow
+./airflow/start_airflow.sh
+
+# Verifiera att Airflow körs
+curl http://localhost:8080/health
+```
+
+#### **1.2 Testa Airflow DAG**
+**Öppna Airflow Web UI:**
+- Gå till http://localhost:8080
+- Login: admin / [genererat lösenord från start_airflow.sh]
+- Hitta DAG: `igdb_data_pipeline`
+
+**Testa DAG manuellt:**
+1. **Klicka på DAG namnet** → `igdb_data_pipeline`
+2. **Klicka på "Trigger DAG"** (play-knapp)
+3. **Välj "Trigger DAG w/ Config"** för att skicka parametrar
+4. **Konfigurera:**
+   ```json
+   {
+     "games_limit": 100,
+     "test_mode": true
+   }
+   ```
+
+**Övervaka körning:**
+- **Graph View:** Se task dependencies och status
+- **Tree View:** Se historik över körningar
+- **Logs:** Klicka på task → "Log" för detaljerade felmeddelanden
+
+#### **1.3 Troubleshooting vanliga problem**
+```bash
+# Om DAG inte visas:
+# Kontrollera att DAG-filen är korrekt placerad
+ls -la airflow/dags/igdb_data_pipeline.py
+
+# Om tasks failar:
+# Klicka på task → "Log" för att se felmeddelanden
+# Vanliga problem:
+# - IGDB API credentials saknas
+# - GCP service account key saknas
+# - Python path problem
+```
+
+### **Steg 2: Vertex AI Notebook Setup (1-2 timmar)**
+
+#### **2.1 Aktivera Vertex AI API**
+```bash
+# Aktivera venv först
+source venv/bin/activate
+
+# Aktivera Vertex AI API
+gcloud services enable aiplatform.googleapis.com
+
+# Verifiera att API är aktiverat
+gcloud services list --enabled --filter="name:aiplatform"
+```
+
+#### **2.2 Skapa Vertex AI Notebook Instance**
+```bash
+# Skapa notebook instance
+gcloud ai notebooks instances create igdb-ml-notebook \
+  --location=europe-west1 \
+  --machine-type=e2-standard-4 \
+  --vm-image-project=deeplearning-platform-release \
+  --vm-image-family=tf2-2-8-cpu \
+  --vm-image-name=tf2-2-8-cpu-20220119-170516
+
+# Öppna notebook
+gcloud ai notebooks instances open igdb-ml-notebook --location=europe-west1
+```
+
+#### **2.3 Konfigurera Notebook Environment**
+```python
+# Installera dependencies i notebook
+!pip install pandas numpy scikit-learn google-cloud-bigquery
+
+# Konfigurera GCP authentication
+from google.cloud import bigquery
+import pandas as pd
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Testa BigQuery connection
+client = bigquery.Client()
+print("BigQuery connection successful!")
+```
+
+### **Steg 3: ML Model Comparison (1-2 timmar)**
+
+#### **3.1 Ladda data från BigQuery**
+```python
+# Ladda våra 100 spel från BigQuery
+query = """
+SELECT id, name, summary, rating, genre_id, platform_id, theme_id
+FROM `exalted-tempo-471613-e2.igdb_games.game_recommendations`
+WHERE summary IS NOT NULL
+"""
+df = client.query(query).to_dataframe()
+print(f"Laddat {len(df)} spel från BigQuery")
+```
+
+#### **3.2 Träna content-based model**
+```python
+# Träna samma modell som lokalt
+vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
+tfidf_matrix = vectorizer.fit_transform(df['summary'].fillna(''))
+
+# Beräkna similarity matrix
+similarity_matrix = cosine_similarity(tfidf_matrix)
+
+print(f"Tränat model med {len(df)} spel")
+print(f"Similarity matrix shape: {similarity_matrix.shape}")
+```
+
+#### **3.3 Jämför prestanda**
+```python
+# Testa rekommendationer
+def get_recommendations(game_id, top_n=3):
+    game_idx = df[df['id'] == game_id].index[0]
+    similarity_scores = similarity_matrix[game_idx]
+    top_indices = similarity_scores.argsort()[-top_n-1:-1][::-1]
+    return df.iloc[top_indices][['id', 'name', 'rating']]
+
+# Testa med ett spel
+test_game_id = df.iloc[0]['id']
+recommendations = get_recommendations(test_game_id)
+print("Rekommendationer:")
+print(recommendations)
+```
+
+### **Steg 4: Progressive Scaling Strategy (2-3 dagar)**
+
+#### **4.1 Skalningsfaser**
+**Fas 1: 100 → 1,000 spel (2-3 timmar)**
+- Testa lokalt först
+- Verifiera data quality
+- Jämför ML prestanda
+
+**Fas 2: 1,000 → 10,000 spel (4-6 timmar)**
+- Implementera batch processing
+- Flytta data till Cloud Storage
+- Testa Vertex AI träning
+
+**Fas 3: 10,000 → 100,000+ spel (1-2 dagar)**
+- Cloud Functions för parallell data collection
+- Vertex AI för distributed ML training
+- BigQuery för data processing
+
+#### **4.2 Kvalitetskontroll vid varje steg**
+```bash
+# Data quality validation
+python -c "from src.data_processing.etl_pipeline import ETLPipeline; ETLPipeline().validate_data()"
+
+# ML performance testing
+python -c "from src.models.game_recommender import GameRecommender; GameRecommender().train_and_evaluate()"
+
+# Airflow DAG testing
+# Kör DAG med nya parametrar och övervaka resultat
+```
 
 ---
 
@@ -829,15 +1004,59 @@ När du har genomfört Fas 4A kommer du att ha:
 
 ## 📝 **Projektstatus**
 
-**Senast uppdaterad:** 2025-01-11
-**Nuvarande fas:** Fas 4A - GCP Learning (✅ BigQuery Klar) + Docker & CI/CD Integration (✅ Klar) + Local-First ML Development (✅ Klar) + Frontend Integration (✅ Klar) + Data Quality Dashboard (✅ Klar) + GitHub Actions CI/CD (✅ Klar)
-**Nästa milestone:** dbt Project Setup och Data Pipeline Architecture för skalning
+**Senast uppdaterad:** 2025-09-12
+**Nuvarande fas:** Fas 5 - AutoML Pipeline & Cloud Production (🔄 Pågående) + EU Migration Complete (✅ Klar)
+**Nästa milestone:** Skalbar AutoML pipeline med incremental data collection och CI/CD deployment
 **Gruppmedlemmar:** Viktoria, Isak & Johan
 **Teknisk stack:** Python, Next.js, shadcn/ui, Docker, GCP, IGDB API
 **Budget:** AI24S-Data-Engineering-IGDB (kr100.00/månad) + $300 GCP credits
 **GCP Project:** IGDB-ML-Pipeline (exalted-tempo-471613-e2)
 **Strategi:** Hybrid GCP Learning → Local Scaling → Cloud Production
-**Status:** Komplett fungerande system med 100 spel, ML-rekommendationer, data quality dashboard och Docker containerization. Redo för GCP learning och scaling.
+**Status:** Komplett fungerande system med 100 spel, ML-rekommendationer, data quality dashboard, Docker containerization och EU GCP migration. Redo för AutoML pipeline och production deployment.
+
+---
+
+## 🚀 **Nästa Steg - AutoML Pipeline & Production Deployment**
+
+### **Fas 5B: Skalbar AutoML Pipeline** 🎯 **NÄSTA**
+
+**Mål:** Implementera automatisk, skalbar ML pipeline som fungerar lika bra med 100 spel som med 10,000+ spel
+
+#### **Steg 1: AutoML Integration (1-2 dagar)**
+- [ ] **Konfigurera Vertex AI AutoML** för automatisk modellträning
+- [ ] **Integrera AutoML med Airflow DAG** för automatiserad pipeline
+- [ ] **Testa AutoML prestanda** med våra 100 spel från BigQuery EU
+- [ ] **Jämför AutoML vs manuell ML** för prestanda och kostnad
+
+#### **Steg 2: Incremental Data Collection (1 dag)**
+- [ ] **Implementera data freshness tracking** i BigQuery
+- [ ] **Optimera IGDB API calls** för att undvika duplicerade requests
+- [ ] **Caching strategy** för att spara API rate limits
+- [ ] **Batch processing** för effektiv data collection
+
+#### **Steg 3: CI/CD GCP Deployment (1-2 dagar)**
+- [ ] **Konfigurera Cloud Build** för automatisk deployment
+- [ ] **Deploy frontend till Cloud Run** med Next.js
+- [ ] **Deploy backend till Cloud Run** med FastAPI
+- [ ] **Konfigurera Cloud SQL** för PostgreSQL production
+- [ ] **Sätt upp monitoring** med Cloud Monitoring
+
+#### **Steg 4: Production Monitoring (1 dag)**
+- [ ] **Budget alerts** för kostnadskontroll
+- [ ] **Performance monitoring** för API response times
+- [ ] **Error tracking** med Cloud Error Reporting
+- [ ] **Logging** med Cloud Logging
+
+### **Teknisk Arkitektur för Production:**
+```
+IGDB API → Airflow → BigQuery EU → AutoML → Trained Model → Cloud Run → Next.js Frontend
+```
+
+**Fördelar med AutoML:**
+- ✅ Automatisk skalning med datamängd
+- ✅ Ingen manuell ML-optimering krävs
+- ✅ GCP hanterar infrastruktur
+- ✅ Konsistent prestanda oavsett data-volym
 
 ---
 
