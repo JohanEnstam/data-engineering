@@ -49,9 +49,9 @@ dag = DAG(
 
 # Configuration
 PROJECT_ID = 'exalted-tempo-471613-e2'
-DATASET_ID = 'igdb_games'
-RAW_BUCKET = 'igdb-raw-data-1757587379'
-PROCESSED_BUCKET = 'igdb-processed-data-1757587387'
+DATASET_ID = 'igdb_game_data'  # EU dataset
+RAW_BUCKET = 'igdb-raw-data-eu-1757661329'
+PROCESSED_BUCKET = 'igdb-processed-data-eu-1757661341'
 SERVICE_ACCOUNT_KEY = '/Users/johanenstam/Sync/Utveckling/data-engineering/frontend/src/github-actions-key.json'
 
 def collect_igdb_data(**context):
@@ -59,17 +59,34 @@ def collect_igdb_data(**context):
     Collect data from IGDB API and save to local file
     """
     import sys
-    sys.path.append('/Users/johanenstam/Sync/Utveckling/data-engineering')
+    import os
+    import logging
     
-    from src.data_collectors.igdb_data_collector import IGDBDataCollector
+    # Add project path
+    project_path = '/Users/johanenstam/Sync/Utveckling/data-engineering'
+    sys.path.append(project_path)
+    
+    # Set working directory
+    os.chdir(project_path)
     
     # Set up logging
     logging.info("Starting IGDB data collection...")
+    logging.info(f"Working directory: {os.getcwd()}")
+    logging.info(f"Python path includes: {project_path}")
+    
+    # Check if .env file exists
+    env_file = os.path.join(project_path, '.env')
+    if os.path.exists(env_file):
+        logging.info(f".env file found: {env_file}")
+    else:
+        logging.error(f".env file NOT found: {env_file}")
+        raise FileNotFoundError(f".env file not found at {env_file}")
     
     # Collect data using existing collector
     try:
+        from src.data_collectors.igdb_data_collector import IGDBDataCollector
         collector = IGDBDataCollector()
-        games_data = collector.collect_games(limit=100)
+        games_data = collector.collect_games(limit=10)  # Start with fewer games
         
         # Save to file
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')

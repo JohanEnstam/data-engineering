@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: raw
     description: "Raw IGDB game data from BigQuery"
-    schema: igdb_games
+    schema: igdb_game_data
     tables:
       - name: games_raw
         description: "Raw games data with all features"
