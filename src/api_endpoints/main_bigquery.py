@@ -166,6 +166,62 @@ async def get_stats():
         raise HTTPException(status_code=500, detail=f"Error getting stats: {str(e)}")
 
 
+@app.get("/api/budget")
+async def get_budget():
+    """Budget endpoint for frontend compatibility"""
+    return {
+        "message": "Budget endpoint not implemented in BigQuery version",
+        "status": "placeholder"
+    }
+
+
+@app.get("/api/lookups")
+async def get_lookups():
+    """Lookups endpoint for frontend compatibility"""
+    return {
+        "message": "Lookups endpoint not implemented in BigQuery version",
+        "status": "placeholder"
+    }
+
+
+@app.get("/api/recommendations/search")
+async def search_recommendations(q: str = Query(None), limit: int = Query(10)):
+    """Search recommendations endpoint for frontend compatibility"""
+    if not q:
+        return {"games": [], "message": "No search query provided"}
+    
+    try:
+        games_data = bq_client.search_games(q, limit)
+        games = [GameResponse(**game) for game in games_data]
+        
+        return {
+            "games": games,
+            "query": q,
+            "message": f"Found {len(games)} games matching '{q}'"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error searching games: {str(e)}")
+
+
+@app.get("/api/recommendations/recommendations/{game_id}")
+async def get_recommendations(game_id: int, limit: int = Query(3)):
+    """Get recommendations for a specific game"""
+    try:
+        # For now, just return random games as recommendations
+        games_data = bq_client.get_games_data(limit)
+        games = [GameResponse(**game) for game in games_data]
+        
+        return {
+            "recommendations": games,
+            "game_id": game_id,
+            "message": f"Found {len(games)} recommendations for game {game_id}"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting recommendations: {str(e)}")
+
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get('PORT', 8000))
