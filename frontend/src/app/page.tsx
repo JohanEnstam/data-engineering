@@ -118,7 +118,7 @@ export default function Dashboard() {
               No games data is available. This could mean:
             </p>
             <ul className="text-sm text-gray-500 mb-4 space-y-1">
-              <li>• Data collection hasn't been run yet</li>
+              <li>• Data collection hasn&apos;t been run yet</li>
               <li>• No games were found in the last collection</li>
               <li>• Data processing failed</li>
             </ul>

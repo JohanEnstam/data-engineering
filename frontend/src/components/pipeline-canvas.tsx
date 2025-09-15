@@ -34,7 +34,16 @@ import {
 } from "lucide-react";
 
 // Custom Node Component
-function PipelineNode({ data }: { data: any }) {
+interface PipelineNodeData {
+  type: string;
+  label: string;
+  status: string;
+  gcpService?: string;
+  localEquivalent?: string;
+  cost?: string;
+}
+
+function PipelineNode({ data }: { data: PipelineNodeData }) {
   const getNodeIcon = (type: string) => {
     switch (type) {
       case 'data-collection': return <Cloud className="h-5 w-5" />;
@@ -72,13 +81,13 @@ function PipelineNode({ data }: { data: any }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {getNodeIcon(data.type)}
-            <CardTitle className="text-sm">{data.title}</CardTitle>
+            <CardTitle className="text-sm">{data.label}</CardTitle>
           </div>
           {getStatusIcon(data.status)}
         </div>
       </CardHeader>
       <CardContent className="pt-0">
-        <p className="text-xs text-gray-600 mb-2">{data.description}</p>
+        <p className="text-xs text-gray-600 mb-2">{data.label}</p>
         <Badge className={`text-xs ${getStatusColor(data.status)}`}>
           {data.status.replace('-', ' ').toUpperCase()}
         </Badge>
@@ -103,7 +112,7 @@ function PipelineNode({ data }: { data: any }) {
 }
 
 // Custom Edge Components
-function DataFlowEdge(props: any) {
+function DataFlowEdge(props: { sourceX: number; sourceY: number; targetX: number; targetY: number; data?: { label?: string } }) {
   return (
     <div className="text-xs text-blue-600 font-medium">
       {props.data?.label || 'Data Flow'}
@@ -111,7 +120,7 @@ function DataFlowEdge(props: any) {
   );
 }
 
-function ControlFlowEdge(props: any) {
+function ControlFlowEdge(props: { sourceX: number; sourceY: number; targetX: number; targetY: number; data?: { label?: string } }) {
   return (
     <div className="text-xs text-gray-600 font-medium">
       {props.data?.label || 'Control Flow'}
@@ -119,7 +128,7 @@ function ControlFlowEdge(props: any) {
   );
 }
 
-function MLFlowEdge(props: any) {
+function MLFlowEdge(props: { sourceX: number; sourceY: number; targetX: number; targetY: number; data?: { label?: string } }) {
   return (
     <div className="text-xs text-purple-600 font-medium">
       {props.data?.label || 'ML Flow'}
@@ -128,7 +137,7 @@ function MLFlowEdge(props: any) {
 }
 
 // Custom Group Component
-function LayerGroup({ data }: { data: any }) {
+function LayerGroup({ data }: { data: { label: string; nodes: Array<{ id: string; type: string; label: string; status: string }>; layer?: string; description?: string } }) {
   const getGroupStyle = (layer: string) => {
     switch (layer) {
       case 'data':
@@ -145,7 +154,7 @@ function LayerGroup({ data }: { data: any }) {
   };
 
   return (
-    <div className={`w-full h-full border-2 rounded-lg p-4 ${getGroupStyle(data.layer)}`}>
+    <div className={`w-full h-full border-2 rounded-lg p-4 ${getGroupStyle(data.layer || 'default')}`}>
       <div className="text-lg font-bold text-center mb-2">{data.label}</div>
       <div className="text-sm text-center opacity-75">{data.description}</div>
     </div>
