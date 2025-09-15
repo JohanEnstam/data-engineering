@@ -1,0 +1,306 @@
+name: GCP Production Deployment
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PROJECT_ID: exalted-tempo-471613-e2
+  REGION: europe-west1
+  REGISTRY: gcr.io
+
+jobs:
+  # Test och kvalitetskontroll
+  test-and-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Set up Node.js 18
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Install Node.js dependencies
+      run: |
+        cd frontend
+        npm install
+        
+    - name: Run Python tests
+      run: |
+        pip install pytest pytest-cov
+        python -m pytest tests/ -v --cov=src --cov-report=xml
+        
+    - name: Run TypeScript/ESLint checks
+      run: |
+        cd frontend
+        npm run lint
+        npm run build
+        
+    - name: Test Docker builds
+      run: |
+        docker build -f Dockerfile -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-backend:test .
+        docker build -f frontend/Dockerfile -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-frontend:test ./frontend
+
+  # Deploy till staging (develop branch)
+  deploy-staging:
+    needs: test-and-quality
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment: staging
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+        
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      
+    - name: Configure Docker for GCR
+      run: |
+        gcloud auth configure-docker
+        
+    - name: Build and push backend image
+      run: |
+        docker build -f Dockerfile -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-backend-staging:${{ github.sha }} .
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-backend-staging:${{ github.sha }}
+        
+    - name: Build and push frontend image
+      run: |
+        docker build -f frontend/Dockerfile -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-frontend-staging:${{ github.sha }} ./frontend
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-frontend-staging:${{ github.sha }}
+        
+    - name: Deploy backend to Cloud Run
+      run: |
+        gcloud run deploy igdb-backend-staging \
+          --image ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-backend-staging:${{ github.sha }} \
+          --platform managed \
+          --region ${{ env.REGION }} \
+          --allow-unauthenticated \
+          --port 8000 \
+          --memory 1Gi \
+          --cpu 1 \
+          --min-instances 0 \
+          --max-instances 10 \
+          --set-env-vars="ENVIRONMENT=staging,PROJECT_ID=${{ env.PROJECT_ID }}"
+          
+    - name: Deploy frontend to Cloud Run
+      run: |
+        gcloud run deploy igdb-frontend-staging \
+          --image ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-frontend-staging:${{ github.sha }} \
+          --platform managed \
+          --region ${{ env.REGION }} \
+          --allow-unauthenticated \
+          --port 3000 \
+          --memory 512Mi \
+          --cpu 1 \
+          --min-instances 0 \
+          --max-instances 5 \
+          --set-env-vars="NEXT_PUBLIC_API_URL=https://igdb-backend-staging-xxx-ew.a.run.app"
+          
+    - name: Get service URLs
+      run: |
+        BACKEND_URL=$(gcloud run services describe igdb-backend-staging --region=${{ env.REGION }} --format='value(status.url)')
+        FRONTEND_URL=$(gcloud run services describe igdb-frontend-staging --region=${{ env.REGION }} --format='value(status.url)')
+        echo "Backend URL: $BACKEND_URL"
+        echo "Frontend URL: $FRONTEND_URL"
+        
+    - name: Run smoke tests
+      run: |
+        # Vänta lite för att services ska starta
+        sleep 30
+        
+        # Test backend health
+        BACKEND_URL=$(gcloud run services describe igdb-backend-staging --region=${{ env.REGION }} --format='value(status.url)')
+        curl -f "$BACKEND_URL/health" || exit 1
+        
+        # Test frontend
+        FRONTEND_URL=$(gcloud run services describe igdb-frontend-staging --region=${{ env.REGION }} --format='value(status.url)')
+        curl -f "$FRONTEND_URL" || exit 1
+
+  # Deploy till production (main branch)
+  deploy-production:
+    needs: test-and-quality
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+        
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      
+    - name: Configure Docker for GCR
+      run: |
+        gcloud auth configure-docker
+        
+    - name: Build and push backend image
+      run: |
+        docker build -f Dockerfile -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-backend-prod:${{ github.sha }} .
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-backend-prod:${{ github.sha }}
+        
+    - name: Build and push frontend image
+      run: |
+        docker build -f frontend/Dockerfile -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-frontend-prod:${{ github.sha }} ./frontend
+        docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-frontend-prod:${{ github.sha }}
+        
+    - name: Deploy backend to Cloud Run
+      run: |
+        gcloud run deploy igdb-backend-prod \
+          --image ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-backend-prod:${{ github.sha }} \
+          --platform managed \
+          --region ${{ env.REGION }} \
+          --allow-unauthenticated \
+          --port 8000 \
+          --memory 2Gi \
+          --cpu 2 \
+          --min-instances 1 \
+          --max-instances 20 \
+          --set-env-vars="ENVIRONMENT=production,PROJECT_ID=${{ env.PROJECT_ID }}"
+          
+    - name: Deploy frontend to Cloud Run
+      run: |
+        gcloud run deploy igdb-frontend-prod \
+          --image ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/igdb-frontend-prod:${{ github.sha }} \
+          --platform managed \
+          --region ${{ env.REGION }} \
+          --allow-unauthenticated \
+          --port 3000 \
+          --memory 1Gi \
+          --cpu 1 \
+          --min-instances 1 \
+          --max-instances 10 \
+          --set-env-vars="NEXT_PUBLIC_API_URL=https://igdb-backend-prod-xxx-ew.a.run.app"
+          
+    - name: Run production smoke tests
+      run: |
+        # Vänta lite för att services ska starta
+        sleep 30
+        
+        # Test backend health
+        BACKEND_URL=$(gcloud run services describe igdb-backend-prod --region=${{ env.REGION }} --format='value(status.url)')
+        curl -f "$BACKEND_URL/health" || exit 1
+        
+        # Test frontend
+        FRONTEND_URL=$(gcloud run services describe igdb-frontend-prod --region=${{ env.REGION }} --format='value(status.url)')
+        curl -f "$FRONTEND_URL" || exit 1
+        
+    - name: Update Cloud Composer DAGs
+      run: |
+        # Ladda upp uppdaterade DAGs till Composer
+        COMPOSER_BUCKET=$(gcloud composer environments describe igdb-data-pipeline --location=europe-west1-a --format='value(config.dagGcsPrefix)' | sed 's|/dags||')
+        gsutil cp airflow/dags/*.py gs://$COMPOSER_BUCKET/dags/
+        echo "DAGs updated in Cloud Composer"
+
+  # Deploy Cloud Functions
+  deploy-functions:
+    needs: test-and-quality
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+        
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      
+    - name: Deploy IGDB Data Collector Function
+      run: |
+        # Skapa zip-fil för Cloud Function
+        cd gcp
+        zip -r igdb-data-collector.zip .
+        
+        # Deploy function
+        gcloud functions deploy igdb-data-collector \
+          --runtime python39 \
+          --trigger-http \
+          --allow-unauthenticated \
+          --memory 1024MB \
+          --timeout 540s \
+          --region ${{ env.REGION }} \
+          --source . \
+          --entry-point collect_igdb_data \
+          --set-env-vars PROJECT_ID=${{ env.PROJECT_ID }},RAW_BUCKET=igdb-raw-data-eu-1757661329,DATASET_ID=igdb_game_data
+          
+    - name: Create Cloud Scheduler job
+      run: |
+        gcloud scheduler jobs create http igdb-data-collection-schedule \
+          --schedule="0 2 * * *" \
+          --uri="https://${{ env.REGION }}-${{ env.PROJECT_ID }}.cloudfunctions.net/igdb-data-collector" \
+          --http-method=POST \
+          --time-zone="Europe/Stockholm" \
+          --headers="Content-Type=application/json" \
+          --message-body='{"trigger":"scheduled","games_limit":1000}' \
+          || echo "Scheduler job may already exist"
+
+  # Monitoring och alerting
+  setup-monitoring:
+    needs: [deploy-production, deploy-functions]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+        
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      
+    - name: Create monitoring alerts
+      run: |
+        # Skapa budget alert
+        gcloud billing budgets create \
+          --billing-account=$(gcloud billing accounts list --format='value(name)' | head -1) \
+          --display-name="IGDB Pipeline Budget Alert" \
+          --budget-amount=500USD \
+          --threshold-rule=percent=80 \
+          --threshold-rule=percent=100 \
+          --notification-rule=pubsub-topic=projects/${{ env.PROJECT_ID }}/topics/budget-alerts \
+          --notification-rule=email=johanenstam@gmail.com \
+          || echo "Budget alert may already exist"
+          
+    - name: Create Cloud Run monitoring
+      run: |
+        # Skapa alert för Cloud Run errors
+        gcloud alpha monitoring policies create \
+          --policy-from-file=monitoring/cloud-run-alerts.yaml \
+          || echo "Monitoring policies may already exist"

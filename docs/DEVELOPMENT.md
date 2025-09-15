@@ -29,9 +29,42 @@ IGDB API → Airflow → Cloud Storage → BigQuery → dbt → ML Processing �
 - **ML:** scikit-learn, pandas, numpy
 - **Storage:** Google Cloud Storage ⭐ **IMPLEMENTERAT**
 - **Frontend:** Next.js 14, TypeScript, Tailwind CSS, shadcn/ui
-- **Cloud:** Google Cloud Platform (GCP)
+- **Cloud:** Google Cloud Platform (GCP) ⭐ **CLOUD RUN DEPLOYED**
 - **CI/CD:** GitHub Actions
-- **Containerization:** Docker
+- **Containerization:** Docker ⭐ **GCR INTEGRATION**
+- **Secrets:** Google Secret Manager ⭐ **IMPLEMENTERAT**
+
+---
+
+## 🚀 **GCP DEPLOYMENT STATUS (2025-01-15)**
+
+### **✅ Implementerat i molnet:**
+
+**🔐 Secret Manager:**
+- ✅ IGDB API credentials säkert lagrade
+- ✅ Cloud Run service account permissions konfigurerade
+
+**🐳 Docker & Container Registry:**
+- ✅ IGDB data collection service containerized
+- ✅ Image pushad till Google Container Registry
+- ✅ Docker authentication konfigurerad
+
+**☁️ Cloud Run Service:**
+- ✅ `collect-igdb-data` service deployad
+- ✅ URL: `https://collect-igdb-data-3sp2ul3fea-ew.a.run.app`
+- ✅ Automatisk skalning och serverless hosting
+- ✅ **TESTAT: 5 spel samlade från IGDB API**
+
+**📊 BigQuery Integration:**
+- ✅ Automatisk data upload från Cloud Run
+- ✅ Tabell: `exalted-tempo-471613-e2.igdb_game_data.games_raw`
+- ✅ JSON format med timestamps
+
+### **🔄 Nästa steg:**
+1. **BigQuery dataset** - Verifiera data struktur
+2. **Cloud Run (FastAPI)** - Deploya backend API
+3. **Cloud Run (Next.js)** - Deploya frontend
+4. **Testa hela pipeline** - 100 spel från IGDB till frontend
 
 ---
 
@@ -1077,6 +1110,45 @@ IGDB API → Airflow → BigQuery EU → AutoML → Trained Model → Cloud Run 
 - ✅ Ingen manuell ML-optimering krävs
 - ✅ GCP hanterar infrastruktur
 - ✅ Konsistent prestanda oavsett data-volym
+
+---
+
+## 🎯 **UPPDATERAD GCP DEPLOYMENT STRATEGI**
+
+### **Kursprojekt-fokus (4 veckor kvar):**
+- 🎓 **Behöver fungerande pipeline** för betyg
+- 💰 **$300 free credits** - Vill inte bränna i onödan
+- 🎯 **100 spel** - Nuvarande dataset, vill expandera senare
+- 📚 **Lärande-fokus** - Vill förstå varje steg
+
+### **Kostnadseffektiv approach:**
+**Alternativ 1: Enkel Pipeline (Rekommenderat)**
+```
+IGDB API → Cloud Functions → BigQuery → Cloud Run (FastAPI + Next.js)
+```
+- **Kostnad:** ~$35/månad
+- **Setup-tid:** 1-2 dagar
+- **Skalbar:** Fungerar för 100 spel och 334,000 spel
+
+**Alternativ 2: Cloud Composer Pipeline (Senare)**
+```
+IGDB API → Cloud Functions → BigQuery → dbt → Vertex AI → Cloud Run
+```
+- **Kostnad:** ~$330/månad
+- **Setup-tid:** 3-5 dagar
+- **Professionell:** Som verkliga production systems
+
+### **Implementation roadmap:**
+1. **Fas 1:** Enkel pipeline med Cloud Functions + Cloud Run
+2. **Fas 2:** Expansion till fler spel (1000+)
+3. **Fas 3:** Cloud Composer + Vertex AI (valfritt)
+
+### **Nästa steg:**
+- ✅ Aktivera GCP APIs
+- ✅ Deploya Cloud Function för data collection
+- ✅ Sätt upp BigQuery dataset
+- ✅ Deploya Cloud Run services
+- ✅ Testa hela pipeline
 
 ---
 
