@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Gamepad2, BarChart3, Sparkles } from "lucide-react";
+import { Gamepad2, BarChart3, Sparkles, Workflow } from "lucide-react";
 
 const navigation = [
   {
@@ -15,6 +15,11 @@ const navigation = [
     name: "Rekommendationer",
     href: "/recommendations",
     icon: Sparkles,
+  },
+  {
+    name: "Pipeline",
+    href: "/pipeline",
+    icon: Workflow,
   },
 ];
 
