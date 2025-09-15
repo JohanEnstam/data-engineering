@@ -12,7 +12,6 @@ import { DataQualityCard } from "@/components/data-quality-card";
 import { BudgetCard } from "@/components/budget-card";
 import { BudgetDashboard } from "@/components/budget-dashboard";
 import { CollectionStats } from "@/components/collection-stats";
-import { mockGames, mockDataQuality, mockBudgetInfo } from "@/lib/mock-data";
 
 export default function Dashboard() {
   const [games, setGames] = useState<Game[]>([]);
@@ -30,45 +29,39 @@ export default function Dashboard() {
       setLoading(true);
       setError(null);
 
-      // Try to load from API first, fallback to mock data
-      try {
-        // Load games data
-        const gamesResponse = await fetch('http://localhost:8000/api/games');
-        if (gamesResponse.ok) {
-          const gamesData = await gamesResponse.json();
-          setGames(gamesData);
-        } else {
-          throw new Error('API not available');
-        }
+      // Load games data
+      const gamesResponse = await fetch('http://localhost:8000/api/games');
+      if (gamesResponse.ok) {
+        const gamesData = await gamesResponse.json();
+        setGames(gamesData);
+      } else {
+        setGames([]);
+        setError('Failed to load games data');
+      }
 
-        // Load data quality report
-        const qualityResponse = await fetch('http://localhost:8000/api/data-quality');
-        if (qualityResponse.ok) {
-          const qualityData = await qualityResponse.json();
-          setDataQuality(qualityData);
-        } else {
-          setDataQuality(mockDataQuality);
-        }
+      // Load data quality report
+      const qualityResponse = await fetch('http://localhost:8000/api/data-quality');
+      if (qualityResponse.ok) {
+        const qualityData = await qualityResponse.json();
+        setDataQuality(qualityData);
+      } else {
+        setDataQuality(null);
+      }
 
-        // Load budget info
-        const budgetResponse = await fetch('http://localhost:8000/api/budget');
-        if (budgetResponse.ok) {
-          const budgetData = await budgetResponse.json();
-          setBudgetInfo(budgetData);
-        } else {
-          setBudgetInfo(mockBudgetInfo);
-        }
-
-      } catch (apiError) {
-        // Fallback to mock data
-        console.log('API not available, using mock data');
-        setGames(mockGames);
-        setDataQuality(mockDataQuality);
-        setBudgetInfo(mockBudgetInfo);
+      // Load budget info
+      const budgetResponse = await fetch('http://localhost:8000/api/budget');
+      if (budgetResponse.ok) {
+        const budgetData = await budgetResponse.json();
+        setBudgetInfo(budgetData);
+      } else {
+        setBudgetInfo(null);
       }
 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
+      setGames([]);
+      setDataQuality(null);
+      setBudgetInfo(null);
     } finally {
       setLoading(false);
     }
@@ -102,6 +95,38 @@ export default function Dashboard() {
               className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
               Try Again
+            </button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Empty state when no games are loaded
+  if (games.length === 0 && !loading && !error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Card className="w-96">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-gray-600">
+              <Gamepad2 className="h-5 w-5" />
+              No Games Found
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-600 mb-4">
+              No games data is available. This could mean:
+            </p>
+            <ul className="text-sm text-gray-500 mb-4 space-y-1">
+              <li>• Data collection hasn't been run yet</li>
+              <li>• No games were found in the last collection</li>
+              <li>• Data processing failed</li>
+            </ul>
+            <button 
+              onClick={loadData}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Refresh Data
             </button>
           </CardContent>
         </Card>

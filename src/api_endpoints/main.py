@@ -58,9 +58,81 @@ def load_games_data() -> List[Game]:
         latest_file = max(games_files, key=lambda f: f.stat().st_mtime)
 
         with open(latest_file, "r", encoding="utf-8") as f:
-            games_data = json.load(f)
+            content = f.read().strip()
+            
+            # Try to parse as regular JSON first
+            try:
+                games_data = json.loads(content)
+                # If it's a list, return it directly
+                if isinstance(games_data, list):
+                    processed_games = games_data
+                # If it's a single object, wrap it in a list
+                elif isinstance(games_data, dict):
+                    processed_games = [games_data]
+            except json.JSONDecodeError:
+                # If regular JSON parsing fails, try NDJSON format
+                processed_games = []
+                for line in content.split('\n'):
+                    line = line.strip()
+                    if line:
+                        try:
+                            game = json.loads(line)
+                            processed_games.append(game)
+                        except json.JSONDecodeError:
+                            continue  # Skip invalid lines
 
-        return games_data
+        # Convert string representations of lists to actual lists
+        for game in processed_games:
+            # Convert genres string to list
+            if isinstance(game.get('genres'), str):
+                try:
+                    game['genres'] = json.loads(game['genres'])
+                except:
+                    game['genres'] = []
+            
+            # Convert themes string to list
+            if isinstance(game.get('themes'), str):
+                try:
+                    game['themes'] = json.loads(game['themes'])
+                except:
+                    game['themes'] = []
+            
+            # Convert platforms string to list
+            if isinstance(game.get('platforms'), str):
+                try:
+                    game['platforms'] = json.loads(game['platforms'])
+                except:
+                    game['platforms'] = []
+            
+            # Convert game_modes string to list
+            if isinstance(game.get('game_modes'), str):
+                try:
+                    game['game_modes'] = json.loads(game['game_modes'])
+                except:
+                    game['game_modes'] = []
+            
+            # Convert player_perspectives string to list
+            if isinstance(game.get('player_perspectives'), str):
+                try:
+                    game['player_perspectives'] = json.loads(game['player_perspectives'])
+                except:
+                    game['player_perspectives'] = []
+            
+            # Convert screenshot_ids string to list
+            if isinstance(game.get('screenshot_ids'), str):
+                try:
+                    game['screenshot_ids'] = json.loads(game['screenshot_ids'])
+                except:
+                    game['screenshot_ids'] = []
+            
+            # Convert website_ids string to list
+            if isinstance(game.get('website_ids'), str):
+                try:
+                    game['website_ids'] = json.loads(game['website_ids'])
+                except:
+                    game['website_ids'] = []
+
+        return processed_games
     except Exception as e:
         print(f"Error loading games data: {e}")
         return []
