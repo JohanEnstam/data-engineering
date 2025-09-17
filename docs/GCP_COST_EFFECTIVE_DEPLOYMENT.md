@@ -399,12 +399,18 @@ gcloud logging read "resource.type=cloud_run_revision" --limit=10
 5. **Cloud Build** - CI/CD pipelines
 6. **Monitoring** - Kostnad och performance tracking
 
-### **Nästa steg (när grunden fungerar):**
+### **Nästa steg - SERVERLESS ML PIPELINE:**
 
-1. **Cloud Composer** - Orchestration och DAGs
-2. **Vertex AI** - Machine Learning i molnet
-3. **dbt** - Data transformation
-4. **Advanced monitoring** - Alerting och dashboards
+1. **ML Training Function** - Automatisk model training (Cloud Functions)
+2. **Model Serving Function** - Live rekommendationer (Cloud Functions)
+3. **Cloud Scheduler** - Automatisk orchestration (Serverless)
+4. **Backend Integration** - ML model i FastAPI
+5. **Frontend Recommendations** - Rekommendationsfunktionalitet
+6. **Skala till fler spel** - 1000+ spel från IGDB
+
+**📋 Detaljerad plan:** Se `docs/SERVERLESS_ML_PIPELINE.md`
+
+**💰 Kostnad:** ~$15-30/månad (vs $300-400/månad för Cloud Composer)
 
 ---
 

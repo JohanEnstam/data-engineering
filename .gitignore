@@ -255,3 +255,11 @@ build/
 dist/
 out/
 docs/course-materials/
+
+# Project-specific cleanup
+data/temp/
+*.csv
+*.json
+!frontend/package*.json
+!docs/*.json
+!gcp/*.json

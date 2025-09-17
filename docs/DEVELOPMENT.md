@@ -74,10 +74,16 @@ IGDB API → Airflow → Cloud Storage → BigQuery → dbt → ML Processing �
 - ✅ **Alla endpoints** fungerar
 - ✅ **Live data** från BigQuery till frontend
 
-### **🔄 Nästa steg (valfritt):**
-1. **Skala till fler spel** - 1000+ spel från IGDB
-2. **Cloud Composer** - Automatisk scheduling (valfritt)
-3. **ML Pipeline** - Rekommendationsmodell (valfritt)
+### **🔄 Nästa steg - SERVERLESS ML PIPELINE:**
+1. **ML Training Function** - Automatisk model training (Cloud Functions)
+2. **Model Serving Function** - Live rekommendationer (Cloud Functions)
+3. **Cloud Scheduler** - Automatisk orchestration (Serverless)
+4. **Backend Integration** - ML model i FastAPI
+5. **Frontend Recommendations** - Rekommendationsfunktionalitet
+6. **Skala till fler spel** - 1000+ spel från IGDB
+
+**📋 Detaljerad plan:** Se `docs/SERVERLESS_ML_PIPELINE.md`
+**💰 Kostnad:** ~$15-30/månad (vs $300-400/månad för Cloud Composer)
 
 ---
 
